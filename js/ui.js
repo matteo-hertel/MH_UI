@@ -174,13 +174,60 @@ var UI = (function($) {
         removeModal: function() {
             $(this).remove();
         },
-        progressbar: function(percentage) {
-            return  $("<div/>", {class: "progress progress-striped active"}).append(
-                    $("<div/>", {class: "progress-bar",
-                        style: "width: " + percentage + "%"
+        progressbar: function(data) {
+
+            var self = UserInterface;
+            // if an object is passed to the progressbar let's create it
+            if (typeof data === "object") {
+                self.components.progressbar = data;
+                return self.createProgressbar();
+            }
+            else if (typeof data === "number") {
+                self.components.progressbar = {};
+                self.components.progressbar.striped = true;
+                self.components.progressbar.active = true;
+                self.components.progressbar.percentage = data;
+                return self.createProgressbar();
+            }
+        },
+        buildClass: function() {
+            var self = UserInterface;
+            self.components.progressbar.class = self.components.progressbar.class || "";
+            self.components.progressbar.class += " progress";
+            self.components.progressbar.level = self.components.progressbar.level ? " progress-bar progress-bar-" + self.components.progressbar.level : "progress-bar";
+            self.components.progressbar.class += self.components.progressbar.striped ? " progress-striped" : "";
+            self.components.progressbar.class += self.components.progressbar.active ? " active" : "";
+
+        },
+        createProgressbar: function() {
+            var self = UserInterface;
+            //init the id, show, defaultFooter and skeleton proprietes to prevent call to undefined stuff
+            self.buildClass();
+            self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class}).append(
+                    $("<div/>", {class: self.components.progressbar.level,
+                        style: "width: " + (self.components.progressbar.percentage || 0) + "%"
                     })
                     )
 
+            if (typeof self.components.progressbar.callback === "function") {
+                self.components.progressbar.callback({
+                    object: self.components.progressbar.skeleton,
+                    animate: self.animate
+                })
+            }
+
+            return self.components.progressbar.skeleton;
+
+        },
+        animate: function(obj) {
+            var self = UserInterface;
+            $(self.components.progressbar.skeleton.children()[0]).animate({
+                width: obj.percentage + "%"
+            }, obj.time, function() {
+                if (typeof obj.callback === "function") {
+                    obj.callback();
+                }
+            });
         },
         randomId: function() {
             var text = "";

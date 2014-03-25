@@ -132,6 +132,14 @@
                         var self = CodeEditor;
                         self.resetDefault();
                         var content = self.config.editor.val();
+                        if (!content) {
+                            self.config.error.html("<h3>Please insert your code</h3>").show();
+                            return false;
+                        }
+                        if (!content.match(/^["UI."]+[a-z]*\((.)*\)/gi)) {
+                            self.config.error.html("<h3>You can test only the UI components</h3>").show();
+                            return false;
+                        }
                         try {
                             var execute = eval(content);
                             self.config.result.html(execute).fadeIn(400)
