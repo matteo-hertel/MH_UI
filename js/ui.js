@@ -7,7 +7,7 @@
  */
 
 
-var UI = (function($) {
+var UI = UI || (function($) {
     var UserInterface = {
         // set the components to an empty object than we can store
         // here our components
@@ -175,25 +175,26 @@ var UI = (function($) {
             $(this).remove();
         },
         /*
-        * -------------------------------------------Progressbar-----------------------------------------------------
-        *
-        *   public progressbar method
-        *
-        *   this method accept an integer or an object as parameter and will return the html for
-        *   the progressbar.
-        *
-        *   if an integer is passed a default active and striped proressbar will be created
-        *
-        *   if an object is passed the progressbar will be created according to the object
-        *   
-        * Object properties:
-        *     class: {optional} a custom class for the container of the progressbar
-        *     level:  Twitter Bootstrap message level: success, info, danger, warning
-        *     percentage:  an integer from 0 to 100, default 0
-        *     striped:  {optional} boolean to make the progressbar striepd
-        *     active:  {optional} boolean to make the progressbar active
-        *     callback: {optional} a callback function that will be executed once the bar is created, to this function will be passed an object with a reference to the bar and the aniamte function
-        */
+         * -------------------------------------------Progressbar-----------------------------------------------------
+         *
+         *   public progressbar method
+         *
+         *   this method accept an integer or an object as parameter and will return the html for
+         *   the progressbar.
+         *
+         *   if an integer is passed a default active and striped proressbar will be created
+         *
+         *   if an object is passed the progressbar will be created according to the object
+         *   
+         * Object properties:
+         *     class: {optional} a custom class for the container of the progressbar
+         *     id: {optional} a custom id for the container of the progressbar, if no id is provided a random one will be assigned
+         *     level:  Twitter Bootstrap message level: success, info, danger, warning
+         *     percentage:  an integer from 0 to 100, default 0
+         *     striped:  {optional} boolean to make the progressbar striepd
+         *     active:  {optional} boolean to make the progressbar active
+         *     callback: {optional} a callback function that will be executed once the bar is created, to this function will be passed an object with a reference to the bar and the aniamte function
+         */
         progressbar: function(data) {
 
             var self = UserInterface;
@@ -231,17 +232,18 @@ var UI = (function($) {
             self.components.progressbar.class += self.components.progressbar.active ? " active" : "";
 
         },
-       /* the animate function will take an object as input with two property:
-        *   time : time in milliseconds to complete the animation
-        *   width: and integer from 0 to 100 to set the width %
-        *   callback: {optional} always nice to have a callback, when the aniamtion is complete and 
-        *   a valid function is passed the callback will be executed
-        *
-        */
+        /* the animate function will take an object as input with two property:
+         *   time : time in milliseconds to complete the animation
+         *   width: and integer from 0 to 100 to set the width %
+         *   callback: {optional} always nice to have a callback, when the aniamtion is complete and 
+         *   a valid function is passed the callback will be executed
+         *
+         */
         animateProgressbar: function(obj) {
             var self = UserInterface;
             //get the progressbar and apply the jQuery animate
-            $(self.components.progressbar.skeleton.children()[0]).animate({
+            progressbar = $("#" + self.components.progressbar.id).children()[0]
+            $(progressbar).animate({
                 width: obj.percentage + "%"
             }, obj.time, function() {
                 // if a callback is provided fire it
@@ -253,11 +255,12 @@ var UI = (function($) {
         // the core function that will create the progressbar
         createProgressbar: function() {
             var self = UserInterface;
-            //init the id, show, defaultFooter and skeleton proprietes to prevent call to undefined stuff
+            //build the class and add an ID
             self.buildClass();
+            self.components.progressbar.id = self.components.progressbar.id || self.randomId()
             // create the container for the bar
-            self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class}).append(
-                //append the bar itself
+            self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class, id: self.components.progressbar.id}).append(
+                    //append the bar itself
                     $("<div/>", {class: self.components.progressbar.level,
                         style: "width: " + (parseInt(self.components.progressbar.percentage) || 0) + "%"
                     })

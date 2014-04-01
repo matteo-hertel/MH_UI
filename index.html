@@ -12,7 +12,7 @@
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="http://terminal.jcubic.pl/css/jquery.terminal.css" rel="stylesheet">
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 
         <!-- Just for debugging purposes. Don't actually copy this line! -->
         <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -35,11 +35,16 @@
         </div>
 
         <!-- Main jumbotron for a primary marketing message or call to action -->
-        <div class="jumbotron">
+        <div class="jumbotron" style="background-color: white">
             <div class="container">
                 <h1>Welcome to MH_UI!</h1>
                 <p>This is a demo page for the JavaScript wrapper MH_UI, a JS library that made the creation of UI element from Twitter Boostrap easy as pie. Try it yourself!</p>
-                <p><a id="button" class="btn btn-primary btn-lg" role="button">Lauch UI Elements</a></p>
+                <p><a id="launch" class="btn btn-primary btn-lg" role="button">Lauch UI Elements</a></p>
+            </div>
+        </div>
+        <div class="jumbotron" id="components" style="display:none">
+            <div class="container">
+                <h1>Components</h1>
             </div>
         </div>
 
@@ -92,11 +97,11 @@
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        
         <script src="js/bootstrap.min.js"></script>
         <script src="js/ui.js"></script>
-        <script src="http://terminal.jcubic.pl/js/jquery.terminal-0.8.7.min.js"></script>
         <script type="text/javascript">
             (function($) {
                 var CodeEditor = {
@@ -164,31 +169,66 @@
                     result: $('#code_result'),
                     error: $('#code_error')
                 });
+                
+                var UIElements = {
+                    fire: function(config) {
+                        this.config = config;
+                        this.bindEvents();
+
+                    },
+                    bindEvents: function() {
+                        var self = UIElements;
+                        self.config.launch.on('click', self.toggleComponents);
+                    },
+                    toggleComponents: function(e) {
+                        e.preventDefault();
+                        var self = UIElements;
+                        
+                        if (self.config.components.is(":visible")) {
+                            self.config.components.children(".container").children().not("h1").remove();
+                            self.config.components.slideUp(400);
+                        } else {
+                            self.config.components.slideDown(400);
+                            self.startComponents();
+                        }
+                        
+                    },
+                    startComponents : function(){
+                        var self = UIElements;
+                        self.config.container = self.config.components.children(".container");
+                        self.progressbar();
+                    },
+                    progressbar: function(){
+                        var self = UIElements;
+                        self.config.container.append($("<h2/>", {text:"Progressbar", style : "cursor: pointer;"}).on("click", function(){
+                            UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var div = $("#target_div");<br />var animate;<br /><br />var progressbar=UI.progressbar({level:"success",<br />striped:true,<br />active:true,<br />percentage:0,<br />callback:function(obj){animate=obj.animate}<br />});<br /><br />div.append(progressbar);<br /><br />div.append(<br />$("&lt;div/&gt;",{id:"progress_bar_slider"}));<br /><br />$("#progress_bar_slider").slider({range:"max",<br />min:0,<br />max:100,<br />value:0,<br />slide:function(event,ui){<br />animate({time:5,percentage:ui.value})<br />}});</pre>'})
+                        }));
+                        self.config.container.append($("<p/>", {text:"An empty progressbar is created, you can adjust the widht with the slider"}));
+                        var animate;
+                        var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0, callback:function(obj){animate = obj.animate}})
+                        self.config.container.append(progressbar);
+                        self.config.container.append($("<div/>", {id:"progress_bar_slider"}));
+                        
+                        $( "#progress_bar_slider" ).slider({
+                        range: "max",
+                        min: 0,
+                        max: 100,
+                        value: 0,
+                        slide: function( event, ui ) {
+                            animate({time:5, percentage: ui.value})
+                        }
+                      });
+                    }
+                };
+
+                UIElements.fire({
+                    components: $('#components'),
+                    launch: $('#launch'),
+                });
+                
+                
 
             }(jQuery));
-            /*
-             * $('#code_editor').terminal(function(command, term) {
-             if (command !== '') {
-             try {
-             var result = window.eval(command);
-             if (result !== undefined) {
-             term.echo(new String(result));
-             }
-             } catch(e) {
-             term.error(new String(e));
-             }
-             } else {
-             term.echo('');
-             }
-             }, {
-             greetings: 'Javascript Interpreter',
-             name: 'js_demo',
-             height: 200,
-             prompt: 'js> '});
-             [
-             <div style=​"height:​ 224px;​" id=​"code_editor" class=​"form-control terminal">​…​</div>​
-
-             */
 
         </script>
 
