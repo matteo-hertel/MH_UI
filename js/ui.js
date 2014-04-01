@@ -174,60 +174,104 @@ var UI = (function($) {
         removeModal: function() {
             $(this).remove();
         },
+        /*
+        * -------------------------------------------Progressbar-----------------------------------------------------
+        *
+        *   public progressbar method
+        *
+        *   this method accept an integer or an object as parameter and will return the html for
+        *   the progressbar.
+        *
+        *   if an integer is passed a default active and striped proressbar will be created
+        *
+        *   if an object is passed the progressbar will be created according to the object
+        *   
+        * Object properties:
+        *     class: {optional} a custom class for the container of the progressbar
+        *     level:  Twitter Bootstrap message level: success, info, danger, warning
+        *     percentage:  an integer from 0 to 100, default 0
+        *     striped:  {optional} boolean to make the progressbar striepd
+        *     active:  {optional} boolean to make the progressbar active
+        *     callback: {optional} a callback function that will be executed once the bar is created, to this function will be passed an object with a reference to the bar and the aniamte function
+        */
         progressbar: function(data) {
 
             var self = UserInterface;
             // if an object is passed to the progressbar let's create it
             if (typeof data === "object") {
+                // make the object availabe to all the components
                 self.components.progressbar = data;
+                // retunr the progressbar
                 return self.createProgressbar();
             }
+            // if an interger is passed the user want a default progressbar
             else if (typeof data === "number") {
+                // empty object to be populated
                 self.components.progressbar = {};
+                // some nice active and striped effect
                 self.components.progressbar.striped = true;
                 self.components.progressbar.active = true;
-                self.components.progressbar.percentage = data;
+                // set the percentage
+                self.components.progressbar.percentage = parseInt(data);
+                // return the progressbar
                 return self.createProgressbar();
             }
         },
+        // a function to build the class string that will be used in the progressbar
         buildClass: function() {
             var self = UserInterface;
+            // if no class property is passed start with an empty string 
             self.components.progressbar.class = self.components.progressbar.class || "";
+            // add the class progress
             self.components.progressbar.class += " progress";
+            // than the level
             self.components.progressbar.level = self.components.progressbar.level ? " progress-bar progress-bar-" + self.components.progressbar.level : "progress-bar";
+            // add class striped and active if needed 
             self.components.progressbar.class += self.components.progressbar.striped ? " progress-striped" : "";
             self.components.progressbar.class += self.components.progressbar.active ? " active" : "";
 
         },
+       /* the animate function will take an object as input with two property:
+        *   time : time in milliseconds to complete the animation
+        *   width: and integer from 0 to 100 to set the width %
+        *   callback: {optional} always nice to have a callback, when the aniamtion is complete and 
+        *   a valid function is passed the callback will be executed
+        *
+        */
+        animateProgressbar: function(obj) {
+            var self = UserInterface;
+            //get the progressbar and apply the jQuery animate
+            $(self.components.progressbar.skeleton.children()[0]).animate({
+                width: obj.percentage + "%"
+            }, obj.time, function() {
+                // if a callback is provided fire it
+                if (typeof obj.callback === "function") {
+                    obj.callback();
+                }
+            });
+        },
+        // the core function that will create the progressbar
         createProgressbar: function() {
             var self = UserInterface;
             //init the id, show, defaultFooter and skeleton proprietes to prevent call to undefined stuff
             self.buildClass();
+            // create the container for the bar
             self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class}).append(
+                //append the bar itself
                     $("<div/>", {class: self.components.progressbar.level,
-                        style: "width: " + (self.components.progressbar.percentage || 0) + "%"
+                        style: "width: " + (parseInt(self.components.progressbar.percentage) || 0) + "%"
                     })
                     )
-
+            // fire the callback function is a valid function is passed
             if (typeof self.components.progressbar.callback === "function") {
                 self.components.progressbar.callback({
                     object: self.components.progressbar.skeleton,
-                    animate: self.animate
+                    animate: self.animateProgressbar
                 })
             }
 
             return self.components.progressbar.skeleton;
 
-        },
-        animate: function(obj) {
-            var self = UserInterface;
-            $(self.components.progressbar.skeleton.children()[0]).animate({
-                width: obj.percentage + "%"
-            }, obj.time, function() {
-                if (typeof obj.callback === "function") {
-                    obj.callback();
-                }
-            });
         },
         randomId: function() {
             var text = "";
