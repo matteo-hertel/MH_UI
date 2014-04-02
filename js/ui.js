@@ -219,7 +219,7 @@ var UI = UI || (function($) {
             }
         },
         // a function to build the class string that will be used in the progressbar
-        buildClass: function() {
+        progressbarBuildClass: function() {
             var self = UserInterface;
             // if no class property is passed start with an empty string 
             self.components.progressbar.class = self.components.progressbar.class || "";
@@ -248,7 +248,7 @@ var UI = UI || (function($) {
             // (parent widht * percentaqge)/100
             var width = progressbar.width();
             $(progressbar.children()[0]).animate({
-                width: (width * obj.percentage)/100 + "px"
+                width: (width * obj.percentage) / 100 + "px"
             }, obj.time, function() {
                 // if a callback is provided fire it
                 if (typeof obj.callback === "function") {
@@ -260,8 +260,8 @@ var UI = UI || (function($) {
         createProgressbar: function() {
             var self = UserInterface;
             //build the class and add an ID
-            self.buildClass();
-            self.components.progressbar.id = self.components.progressbar.id || self.randomId()
+            self.progressbarBuildClass();
+            self.components.progressbar.id = self.components.progressbar.id || self.randomId();
             // create the container for the bar
             self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class, id: self.components.progressbar.id}).append(
                     //append the bar itself
@@ -280,6 +280,40 @@ var UI = UI || (function($) {
 
             return self.components.progressbar.skeleton;
 
+        },
+        //@mhtodo add callback and on data + documentation
+        button: function(data) {
+
+            var self = UserInterface;
+            if (typeof data === "object") {
+                // make the object availabe to all the components
+                self.components.button = data;
+                // retunr the button
+                return self.createButton();
+            }
+            else if (typeof data === "string") {
+                self.components.button = {};
+                self.components.button.text = data;
+                // retunr the button
+                return self.createButton();
+            }
+        },
+        buildButtonComponents: function() {
+            var self = UserInterface;
+            self.components.button.text = self.components.button.text || "";
+            self.components.button.level = self.components.button.level ? "btn-" + self.components.button.level : "btn-default";
+            self.components.button.class = self.components.button.class ? self.components.button.class + "btn " + self.components.button.level : "btn " + self.components.button.level;
+            self.components.button.disabled ? self.components.button.class += " disabled" : null;
+            self.components.button.size ? self.components.button.class += " btn-" + self.components.button.size : null;
+            self.components.button.id = self.components.button.id || self.randomId();
+
+        },
+        createButton: function() {
+            var self = UserInterface;
+            self.buildButtonComponents();
+            self.components.button.skeleton = $("<button/>", {type: "button", text: self.components.button.text, class: self.components.button.class, id: self.components.button.id})
+
+            return self.components.button.skeleton
         },
         randomId: function() {
             var text = "";
@@ -300,6 +334,7 @@ var UI = UI || (function($) {
     return {
         modal: UserInterface.modal,
         progressbar: UserInterface.progressbar,
+        button: UserInterface.button,
         log: UserInterface.log,
         wipeComponents: UserInterface.wipeComponents
     }
