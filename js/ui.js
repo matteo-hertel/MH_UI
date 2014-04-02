@@ -242,9 +242,13 @@ var UI = UI || (function($) {
         animateProgressbar: function(obj) {
             var self = UserInterface;
             //get the progressbar and apply the jQuery animate
-            progressbar = $("#" + self.components.progressbar.id).children()[0]
-            $(progressbar).animate({
-                width: obj.percentage + "%"
+            var progressbar = $("#" + (obj.id || self.components.progressbar.id))
+            // the jQuery animation in percentage is bugged, so the right way is to get the parent width and
+            // transform thepercentage in pixels, easy math:
+            // (parent widht * percentaqge)/100
+            var width = progressbar.width();
+            $(progressbar.children()[0]).animate({
+                width: (width * obj.percentage)/100 + "px"
             }, obj.time, function() {
                 // if a callback is provided fire it
                 if (typeof obj.callback === "function") {
@@ -269,7 +273,8 @@ var UI = UI || (function($) {
             if (typeof self.components.progressbar.callback === "function") {
                 self.components.progressbar.callback({
                     object: self.components.progressbar.skeleton,
-                    animate: self.animateProgressbar
+                    animate: self.animateProgressbar,
+                    id: self.components.progressbar.id
                 })
             }
 
@@ -280,7 +285,7 @@ var UI = UI || (function($) {
             var text = "";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 18; i++)
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
 
             return text;

@@ -205,7 +205,8 @@
                         }));
                         self.config.container.append($("<p/>", {text:"An empty progressbar is created, you can adjust the widht with the slider"}));
                         var animate;
-                        var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0, callback:function(obj){animate = obj.animate}})
+                        var progressbar_id
+                        var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0, callback:function(obj){animate = obj.animate, progressbar_id = obj.id}})
                         self.config.container.append(progressbar);
                         self.config.container.append($("<div/>", {id:"progress_bar_slider"}));
                         
@@ -215,7 +216,7 @@
                         max: 100,
                         value: 0,
                         slide: function( event, ui ) {
-                            animate({time:5, percentage: ui.value})
+                            animate({time:1, percentage: ui.value, id: progressbar_id})
                         }
                       });
                     }
