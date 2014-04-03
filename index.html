@@ -201,13 +201,11 @@
                     progressbar: function(){
                         var self = UIElements;
                         self.config.container.append($("<h2/>", {text:"Progressbar", style : "cursor: pointer;"}).on("click", function(){
-                            UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var div = $("#target_div");<br />var animate;<br /><br />var progressbar=UI.progressbar({level:"success",<br />striped:true,<br />active:true,<br />percentage:0,<br />callback:function(obj){animate=obj.animate}<br />});<br /><br />div.append(progressbar);<br /><br />div.append(<br />$("&lt;div/&gt;",{id:"progress_bar_slider"}));<br /><br />$("#progress_bar_slider").slider({range:"max",<br />min:0,<br />max:100,<br />value:0,<br />slide:function(event,ui){<br />animate({time:5,percentage:ui.value})<br />}});</pre>'})
+                            UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var div = $("#target_div");<br />var progressbar = UI.progressbar({level:"success",<br /> striped: true,<br /> active:true,<br /> percentage:0<br />});<br /><br />div.append(progressbar.object);<br /><br />div.append(<br />$("&lt;div/&gt;",{id:"progress_bar_slider"}));<br /><br />$("#progress_bar_slider").slider({range:"max",<br />min:0,<br />max:100,<br />value:0,<br />slide:function(event,ui){<br />progressbar.animate({time:5,percentage:ui.value})<br />}});</pre>'})
                         }));
                         self.config.container.append($("<p/>", {text:"An empty progressbar is created, you can adjust the widht with the slider"}));
-                        var animate;
-                        var progressbar_id
-                        var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0, callback:function(obj){animate = obj.animate, progressbar_id = obj.id}})
-                        self.config.container.append(progressbar);
+                        var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0})
+                        self.config.container.append(progressbar.object);
                         self.config.container.append($("<div/>", {id:"progress_bar_slider"}));
                         
                         $( "#progress_bar_slider" ).slider({
@@ -216,7 +214,7 @@
                         max: 100,
                         value: 0,
                         slide: function( event, ui ) {
-                            animate({time:1, percentage: ui.value, id: progressbar_id})
+                            progressbar.animate({time:1, percentage: ui.value, id: progressbar.id})
                         }
                       });
                     }

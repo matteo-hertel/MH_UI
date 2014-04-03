@@ -271,14 +271,14 @@ var UI = UI || (function($) {
                     )
             // fire the callback function is a valid function is passed
             if (typeof self.components.progressbar.callback === "function") {
-                self.components.progressbar.callback({
-                    object: self.components.progressbar.skeleton,
-                    animate: self.animateProgressbar,
-                    id: self.components.progressbar.id
-                })
+                self.components.progressbar.callback(self.components.progressbar.skeleton)
             }
 
-            return self.components.progressbar.skeleton;
+            return {
+                object: self.components.progressbar.skeleton,
+                animate: self.animateProgressbar,
+                id: self.components.progressbar.id
+            }
 
         },
         //@mhtodo add documentation
