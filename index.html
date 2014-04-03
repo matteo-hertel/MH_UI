@@ -147,7 +147,7 @@
                         }
                         try {
                             var execute = eval(content);
-                            self.config.result.html(execute).fadeIn(400)
+                            self.config.result.html(execute.object).fadeIn(400)
                         }
                         catch (error) {
                             self.config.error.html("<h3>An error occurred</h3><br />" + error).show()
