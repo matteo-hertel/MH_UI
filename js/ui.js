@@ -281,7 +281,7 @@ var UI = UI || (function($) {
             return self.components.progressbar.skeleton;
 
         },
-        //@mhtodo add callback and on data + documentation
+        //@mhtodo example UI.button({level:"success", size:"lg", text:"Hola",actions:{lol:function(){alert("yep")}},callback:function(e){id =e.id}})
         button: function(data) {
 
             var self = UserInterface;
@@ -294,7 +294,7 @@ var UI = UI || (function($) {
             else if (typeof data === "string") {
                 self.components.button = {};
                 self.components.button.text = data;
-                // retunr the button
+                // return the button
                 return self.createButton();
             }
         },
@@ -308,10 +308,36 @@ var UI = UI || (function($) {
             self.components.button.id = self.components.button.id || self.randomId();
 
         },
+        buttonChangeText: function(obj){
+            var self = UserInterface;
+            if(!obj.text){
+                return false;
+            }
+            var id = obj.id || self.components.button.id;
+            console.log(id)
+            $("#" + id).text(obj.text);
+            
+        },
         createButton: function() {
             var self = UserInterface;
             self.buildButtonComponents();
-            self.components.button.skeleton = $("<button/>", {type: "button", text: self.components.button.text, class: self.components.button.class, id: self.components.button.id})
+            self.components.button.skeleton = $("<button/>", {
+                type: "button", text: self.components.button.text, 
+                class: self.components.button.class, 
+                id: self.components.button.id});
+                
+            if(typeof  self.components.button.actions === "object"){
+                self.components.button.skeleton.on(self.components.button.actions)
+            }
+            
+            // fire the callback function is a valid function is passed
+            if (typeof self.components.button.callback === "function") {
+                self.components.button.callback({
+                    object: self.components.button.skeleton,
+                    changeText: self.buttonChangeText,
+                    id: self.components.button.id
+                })
+            }
 
             return self.components.button.skeleton
         },
