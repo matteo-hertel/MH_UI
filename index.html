@@ -197,6 +197,7 @@
                         var self = UIElements;
                         self.config.container = self.config.components.children(".container");
                         self.progressbar();
+                        self.buttons();
                     },
                     progressbar: function(){
                         var self = UIElements;
@@ -217,6 +218,28 @@
                             progressbar.animate({time:1, percentage: ui.value, id: progressbar.id})
                         }
                       });
+                    },
+                    buttons: function(){
+                        var self = UIElements;
+                        self.config.container.append($("<h2/>", {text:"Buttons"}));
+                        self.config.container.append($("<p/>", {text:"A couple of example button, click for an action double click for the code"}));
+                        var button1 = UI.button({level:"success", size: "lg", text:"Button number 1", actions:{
+                                click: function(){$(this).addClass("btn-warning")},
+                                dblclick: function(){
+                                    UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var button1=UI.button({level:"success",<br />size:"lg",<br />text:"Button number 1",<br />actions:{click:function(){<br />$(this).addClass("btn-warning")}<br />},<br />dblclick:function(){<br />}}<br />});</pre>'})
+                                 }
+                        }})
+                        var button2 = UI.button({level:"danger", text:"Button number 2", actions:{
+                                click: function(){button2.changeText({text: "Danger!",id: button2.id})},
+                                dblclick: function(){
+                                        UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var button2=UI.button({level:"danger",<br /><br />text:"Button number 2",<br />actions:{<br />click:function(){<br />button2.changeText({text:"Danger!", id: button2.id})<br />},<br />dblclick:function(){<br />}<br />}});</pre>'})
+                                 }
+                        }})
+                    var button3 = UI.button("Default button");
+                    button3.addActions({click:function(){alert("hello")}})
+                        self.config.container.append(button1.object);
+                        self.config.container.append(button2.object);
+                        self.config.container.append(button3.object);
                     }
                 };
 

@@ -10,8 +10,8 @@
 var UI = UI || (function($) {
     var UserInterface = {
         // set the components to an empty object than we can store
-        // here our components
-        components: {},
+        // here our components the first components is actually an array where the ids are stored
+        components: {ids: []},
         /*
          * Modal
          *
@@ -36,7 +36,7 @@ var UI = UI || (function($) {
             // if an object is passed to the modal let's create the modal
             if (typeof data === "object") {
                 self.components.modal = data;
-                self.createModal();
+                self.modalCreate();
             }
 
             // the return object will be like:
@@ -58,12 +58,13 @@ var UI = UI || (function($) {
                 footer: self.components.modal.skeleton.footer,
                 show: self.components.modal.skeleton.show,
                 hide: self.components.modal.skeleton.hide
-            }
+            };
         },
-        createModal: function() {
+        modalCreate: function() {
             var self = UserInterface;
             //init the id, show, defaultFooter and skeleton proprietes to prevent call to undefined stuff
             self.components.modal.id = self.components.modal.id || self.randomId();
+            self.components.ids.push(self.components.modal.id);
             self.components.modal.show = self.components.modal.show !== undefined ? self.components.modal.show : true;
             self.components.modal.defaultFooter = self.components.modal.defaultFooter !== undefined ? self.components.modal.defaultFooter : true;
             self.components.modal.skeleton = {};
@@ -89,7 +90,7 @@ var UI = UI || (function($) {
                         class: "close",
                         "data-dismiss": "modal",
                         "aria-hidden": "true",
-                        html: "&times;",
+                        html: "&times;"
                     })
                     )
                     ).append(
@@ -136,12 +137,12 @@ var UI = UI || (function($) {
             self.components.modal.skeleton.show = function() {
                 // to keep the body clean when the modal is closed it will be removed from the DOM
                 $("#" + self.components.modal.id).modal().on("hide.bs.modal", self.removeModal);
-            }
+            };
             // hide method
             // nice to have method, it can be useful
             self.components.modal.skeleton.hide = function() {
                 $("#" + self.components.modal.id).modal("hide");
-            }
+            };
 
             //by default the close button is appended, you can disable it
             // by passing false to defaultFooter
@@ -151,7 +152,7 @@ var UI = UI || (function($) {
                     class: "btn btn-default",
                     "data-dismiss": "modal",
                     text: "Close"
-                }))
+                }));
             }
             // add the content using the method above
             //note the append to the title to avoi the deltion of the cross to close the modal
@@ -171,7 +172,7 @@ var UI = UI || (function($) {
             }
         },
         // method to remove the modal from the DOM
-        removeModal: function() {
+        modalRemove: function() {
             $(this).remove();
         },
         /*
@@ -179,8 +180,10 @@ var UI = UI || (function($) {
          *
          *   public progressbar method
          *
-         *   this method accept an integer or an object as parameter and will return the html for
-         *   the progressbar.
+         *   this method accept an integer or an object as parameter and will return an object with:
+         *   - the HTML object
+         *   - the animate function
+         *   - the button ID .
          *
          *   if an integer is passed a default active and striped proressbar will be created
          *
@@ -203,7 +206,7 @@ var UI = UI || (function($) {
                 // make the object availabe to all the components
                 self.components.progressbar = data;
                 // retunr the progressbar
-                return self.createProgressbar();
+                return self.progressbarCreate();
             }
             // if an interger is passed the user want a default progressbar
             else if (typeof data === "number") {
@@ -239,10 +242,10 @@ var UI = UI || (function($) {
          *   a valid function is passed the callback will be executed
          *
          */
-        animateProgressbar: function(obj) {
+        progressbarAnimate: function(obj) {
             var self = UserInterface;
             //get the progressbar and apply the jQuery animate
-            var progressbar = $("#" + (obj.id || self.components.progressbar.id))
+            var progressbar = $("#" + (obj.id || self.components.progressbar.id));
             // the jQuery animation in percentage is bugged, so the right way is to get the parent width and
             // transform thepercentage in pixels, easy math:
             // (parent widht * percentaqge)/100
@@ -257,86 +260,144 @@ var UI = UI || (function($) {
             });
         },
         // the core function that will create the progressbar
-        createProgressbar: function() {
+        progressbarCreate: function() {
             var self = UserInterface;
             //build the class and add an ID
             self.progressbarBuildClass();
-            self.components.progressbar.id = self.components.progressbar.id || self.randomId();
+            var progressbar_id = self.components.progressbar.id || self.randomId();
+            self.components.progressbar.id = progressbar_id;
+            self.components.ids.push(progressbar_id);
             // create the container for the bar
             self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class, id: self.components.progressbar.id}).append(
                     //append the bar itself
                     $("<div/>", {class: self.components.progressbar.level,
                         style: "width: " + (parseInt(self.components.progressbar.percentage) || 0) + "%"
                     })
-                    )
+                    );
             // fire the callback function is a valid function is passed
             if (typeof self.components.progressbar.callback === "function") {
-                self.components.progressbar.callback(self.components.progressbar.skeleton)
+                self.components.progressbar.callback(self.components.progressbar.skeleton);
             }
-
+            // return the htmo object, the animate function and the ID
             return {
                 object: self.components.progressbar.skeleton,
-                animate: self.animateProgressbar,
+                animate: self.progressbarAnimate,
                 id: self.components.progressbar.id
-            }
+            };
 
         },
-        //@mhtodo add documentation
+        /*
+         * -------------------------------------------Button-----------------------------------------------------
+         *
+         *   public button method
+         *
+         *   this method accept an string or an object as parameter and will return and object with:
+         *   - the HTML object
+         *   - the changeText function
+         *   - the addAction function
+         *   - the button ID .
+         *
+         *   if an string is passed a default button with the provided text will be created
+         *
+         *   if an object is passed the button will be created according to the object passed
+         *   
+         * Object properties:
+         *     text: text of the button
+         *     level:  Twitter Bootstrap message level: success, info, danger, warning, link, default, primary
+         *     class: {optional} a custom class for the button
+         *     disabled: {optional} if true is passed the button will be disabled
+         *     size: {optional} Twitter Bootstrap size: lg, sm, xs
+         *     id: {optional} a custom id for the button if no id is provided a random one will be assigned
+         *     actions: {optional} an object with key the event you want to bind (click, mouseenter, customEvent, NOTE: do not quote the event), and the relative function 
+         *     callback: {optional} a callback function that will be executed once the button is created, to this function will be passed the HTML object for the button
+         */
         button: function(data) {
 
             var self = UserInterface;
+            // if an object is passed the user want a custom button
             if (typeof data === "object") {
                 // make the object availabe to all the components
                 self.components.button = data;
                 // retunr the button
-                return self.createButton();
+                return self.buttonCreate();
             }
+            // if a string is passed the user want a default button
             else if (typeof data === "string") {
+                //empty object for the button
                 self.components.button = {};
+                // set the text
                 self.components.button.text = data;
                 // return the button
-                return self.createButton();
+                return self.buttonCreate();
             }
         },
-        buildButtonComponents: function() {
+        //this function will take care of all the borgin stuff like create the right class and so on
+        buttonBuildComponents: function() {
             var self = UserInterface;
+            // set the text
             self.components.button.text = self.components.button.text || "";
+            //create the class
             self.components.button.level = self.components.button.level ? "btn-" + self.components.button.level : "btn-default";
             self.components.button.class = self.components.button.class ? self.components.button.class + "btn " + self.components.button.level : "btn " + self.components.button.level;
             self.components.button.disabled ? self.components.button.class += " disabled" : null;
             self.components.button.size ? self.components.button.class += " btn-" + self.components.button.size : null;
+            // set the id
             self.components.button.id = self.components.button.id || self.randomId();
+            // add the id to the tracking array
+            self.components.ids.push(self.components.button.id);
 
         },
+        // want to chage the text after the button is created, no problem!
         buttonChangeText: function(obj) {
             var self = UserInterface;
+            // if no text return false
             if (!obj.text) {
                 return false;
             }
+            // we need an Id, if no id is passed the last button id will be used
             var id = obj.id || self.components.button.id;
+            //change the text
             $("#" + id).text(obj.text);
 
         },
-        createButton: function() {
+        // you forgot to bind some event to the button didn't you, this function will help you
+        buttonAddActions: function(obj, htmlObj) {
             var self = UserInterface;
-            self.buildButtonComponents();
+            // if no object return false
+            if (typeof obj !== "object") {
+                return false;
+            }
+            // we need Jquery object, if none is passed the function will use the last button object
+            var button_obj = htmlObj || self.components.button.skeleton;
+            //bind the event
+            $(button_obj).on(obj);
+
+        },
+        // let's create the button
+        buttonCreate: function() {
+            var self = UserInterface;
+            // build the components
+            self.buttonBuildComponents();
+            // the button finally
             self.components.button.skeleton = $("<button/>", {
                 type: "button", text: self.components.button.text,
                 class: self.components.button.class,
                 id: self.components.button.id});
-
+            //if a valid action object is passed let's bind the events
             if (typeof self.components.button.actions === "object") {
-                self.components.button.skeleton.on(self.components.button.actions)
+                self.components.button.skeleton.on(self.components.button.actions);
             }
 
             // fire the callback function is a valid function is passed
             if (typeof self.components.button.callback === "function") {
-                self.components.button.callback(self.components.button.skeleton)
+                self.components.button.callback(self.components.button.skeleton);
             }
-
+            //return the HTML object, the two functions nad the ID
             return {object: self.components.button.skeleton,
                 changeText: self.buttonChangeText,
-                id: self.components.button.id}
+                addActions: self.buttonAddActions,
+                id: self.components.button.id
+            };
         },
         randomId: function() {
             var text = "";
@@ -351,7 +412,13 @@ var UI = UI || (function($) {
             return UserInterface.components
         },
         wipeComponents: function() {
-            UserInterface.components = {};
+            var self = UserInterface;
+
+            for (id in self.components.ids) {
+                $("#" + self.components.ids[id]).remove();
+            }
+            self.component = {};
+            self.components.ids = [];
         }
     };
     return {
