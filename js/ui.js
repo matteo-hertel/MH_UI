@@ -62,6 +62,7 @@ var UI = UI || (function($) {
         },
         modalCreate: function() {
             var self = UserInterface;
+            var component = "modal";
             //init the id, show, defaultFooter and skeleton proprietes to prevent call to undefined stuff
             self.components.modal.id = self.components.modal.id || self.randomId();
             self.components.ids.push(self.components.modal.id);
@@ -85,13 +86,7 @@ var UI = UI || (function($) {
                     //Header
                     $("<div/>", {class: "modal-header"}).append(
                     //the x close button
-                    $("<button/>", {
-                        type: "button",
-                        class: "close",
-                        "data-dismiss": "modal",
-                        "aria-hidden": "true",
-                        html: "&times;"
-                    })
+                    UI.button({class: "close", default: false, text: "x", data: {dismiss: "modal"}}).object
                     )
                     ).append(
                     //Body
@@ -102,6 +97,14 @@ var UI = UI || (function($) {
                     )
                     )
                     ).appendTo("body");
+
+            if (typeof self.components[component].data === "object") {
+                for (var data in self.components[component].data) {
+                    if (self.components[component].data.hasOwnProperty(data)) {
+                        self.components[component].skeleton.object.attr("data-" + data, self.components[component].data[data]);
+                    }
+                }
+            }
 
             // title method
             // this method will add a title at our modal
@@ -136,7 +139,7 @@ var UI = UI || (function($) {
             // if you set false the show propety, with this method you can display the modal
             self.components.modal.skeleton.show = function() {
                 // to keep the body clean when the modal is closed it will be removed from the DOM
-                $("#" + self.components.modal.id).modal().on("hide.bs.modal", self.removeModal);
+                $("#" + self.components.modal.id).modal().on("hide.bs.modal", self.modalRemove);
             };
             // hide method
             // nice to have method, it can be useful
@@ -147,12 +150,13 @@ var UI = UI || (function($) {
             //by default the close button is appended, you can disable it
             // by passing false to defaultFooter
             if (self.components.modal.defaultFooter === true) {
-                self.components.modal.skeleton.footer($("<button/>", {
-                    type: "button",
-                    class: "btn btn-default",
-                    "data-dismiss": "modal",
-                    text: "Close"
-                }));
+                self.components.modal.skeleton.footer(
+                        UI.button({
+                            text: "Close",
+                            data: {
+                                dismiss: "modal"
+                            }
+                        }).object);
             }
             // add the content using the method above
             //note the append to the title to avoi the deltion of the cross to close the modal
@@ -222,7 +226,7 @@ var UI = UI || (function($) {
             }
         },
         // a function to build the class string that will be used in the progressbar
-        progressbarBuildClass: function() {
+        progressbarBuildComponent: function() {
             var self = UserInterface;
             // if no class property is passed start with an empty string 
             self.components.progressbar.class = self.components.progressbar.class || "";
@@ -262,8 +266,9 @@ var UI = UI || (function($) {
         // the core function that will create the progressbar
         progressbarCreate: function() {
             var self = UserInterface;
+            var component = "progressbar";
             //build the class and add an ID
-            self.progressbarBuildClass();
+            self.progressbarBuildComponent();
             var progressbar_id = self.components.progressbar.id || self.randomId();
             self.components.progressbar.id = progressbar_id;
             self.components.ids.push(progressbar_id);
@@ -274,6 +279,14 @@ var UI = UI || (function($) {
                         style: "width: " + (parseInt(self.components.progressbar.percentage) || 0) + "%"
                     })
                     );
+
+            if (typeof self.components[component].data === "object") {
+                for (var data in self.components[component].data) {
+                    if (self.components[component].data.hasOwnProperty(data)) {
+                        self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
+                    }
+                }
+            }
             // fire the callback function is a valid function is passed
             if (typeof self.components.progressbar.callback === "function") {
                 self.components.progressbar.callback(self.components.progressbar.skeleton);
@@ -308,6 +321,7 @@ var UI = UI || (function($) {
          *     disabled: {optional} if true is passed the button will be disabled
          *     size: {optional} Twitter Bootstrap size: lg, sm, xs
          *     id: {optional} a custom id for the button if no id is provided a random one will be assigned
+         *     default: {optional} if the value is false the default btn and btn- classes will not be added to the button
          *     actions: {optional} an object with key the event you want to bind (click, mouseenter, customEvent, NOTE: do not quote the event), and the relative function 
          *     callback: {optional} a callback function that will be executed once the button is created, to this function will be passed the HTML object for the button
          */
@@ -325,20 +339,21 @@ var UI = UI || (function($) {
             else if (typeof data === "string") {
                 //empty object for the button
                 self.components.button = {};
-                // set the text
+                // set the text, default and level
                 self.components.button.text = data;
                 // return the button
                 return self.buttonCreate();
             }
         },
         //this function will take care of all the borgin stuff like create the right class and so on
-        buttonBuildComponents: function() {
+        buttonBuildComponent: function() {
             var self = UserInterface;
             // set the text
             self.components.button.text = self.components.button.text || "";
             //create the class
-            self.components.button.level = self.components.button.level ? "btn-" + self.components.button.level : "btn-default";
-            self.components.button.class = self.components.button.class ? self.components.button.class + "btn " + self.components.button.level : "btn " + self.components.button.level;
+            self.components.button.default = self.components.button.default !== undefined ? self.components.button.default : true
+            self.components.button.level = self.components.button.level ? "btn-" + self.components.button.level : (self.components.button.default ? "btn-default" : "");
+            self.components.button.class = self.components.button.class ? self.components.button.class + (self.components.button.default ? "btn " : "") + self.components.button.level : (self.components.button.default ? "btn " : "") + self.components.button.level;
             self.components.button.disabled ? self.components.button.class += " disabled" : null;
             self.components.button.size ? self.components.button.class += " btn-" + self.components.button.size : null;
             // set the id
@@ -376,8 +391,9 @@ var UI = UI || (function($) {
         // let's create the button
         buttonCreate: function() {
             var self = UserInterface;
+            var component = "button";
             // build the components
-            self.buttonBuildComponents();
+            self.buttonBuildComponent();
             // the button finally
             self.components.button.skeleton = $("<button/>", {
                 type: "button", text: self.components.button.text,
@@ -386,6 +402,14 @@ var UI = UI || (function($) {
             //if a valid action object is passed let's bind the events
             if (typeof self.components.button.actions === "object") {
                 self.components.button.skeleton.on(self.components.button.actions);
+            }
+
+            if (typeof self.components[component].data === "object") {
+                for (var data in self.components[component].data) {
+                    if (self.components[component].data.hasOwnProperty(data)) {
+                        self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
+                    }
+                }
             }
 
             // fire the callback function is a valid function is passed
@@ -397,6 +421,93 @@ var UI = UI || (function($) {
                 changeText: self.buttonChangeText,
                 addActions: self.buttonAddActions,
                 id: self.components.button.id
+            };
+        },
+        alert: function(data) {
+
+            var self = UserInterface;
+            // if an object is passed add the data to the right component
+            if (typeof data === "object") {
+
+                self.components.alert = data;
+                //create the alert
+                return self.alertCreate();
+            }
+        },
+        alertBuildComponent: function() {
+            var self = UserInterface;
+            // set the text
+            self.components.alert.html = self.components.alert.html || "";
+            //create the class
+            self.components.alert.level = self.components.alert.level ? "alert-" + self.components.alert.level : "alert-info";
+            self.components.alert.class = self.components.alert.class ? self.components.alert.class + "alert " + self.components.alert.level : "alert " + self.components.alert.level;
+            self.components.alert.dismissable ? self.components.alert.class += " alert-dismissable" : null;
+            // set the id
+            self.components.alert.id = self.components.alert.id || self.randomId();
+            // add the id to the tracking array
+            self.components.ids.push(self.components.alert.id);
+
+        },
+        alertTimeOut: function(data) {
+            var self = UserInterface;
+
+            if (!data.time) {
+                return false;
+            }
+
+            var alert_id = data.id || self.components.alert.id;
+            setTimeout(function() {
+                if (data.effect) {
+                    $("#" + alert_id)[data.effect](data.effectTime || 400, function() {
+                        $("#" + alert_id).alert("close");
+                    });
+                } else {
+                    $("#" + alert_id).alert("close");
+                }
+            }, data.time);
+
+        },
+        // let's create the alert
+        alertCreate: function() {
+            var self = UserInterface;
+            var component = "alert";
+            // build the components
+            self.alertBuildComponent();
+            // the button finally
+            self.components.alert.skeleton = $("<div/>", {
+                html: self.components.alert.html,
+                class: self.components.alert.class,
+                id: self.components.alert.id});
+
+            if (typeof self.components[component].data === "object") {
+                for (var data in self.components[component].data) {
+                    if (self.components[component].data.hasOwnProperty(data)) {
+                        self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
+                    }
+                }
+            }
+
+            if (self.components.alert.dismissable) {
+                self.components.alert.skeleton.prepend(UI.button({default: false, class: "close", text: "x", data: {dismiss: "alert"}}).object);
+            }
+
+            // fire the callback function is a valid function is passed
+            if (typeof self.components.alert.callback === "function") {
+                self.components.alert.callback(self.components.alert.skeleton);
+            }
+            $("#" + self.components.alert.id).alert();
+
+            if (self.components.alert.time) {
+                self.alertTimeOut({
+                    time: self.components.alert.time,
+                    effect: self.components.alert.effect || false,
+                    effectTime: self.components.alert.effectTime || false
+                });
+            }
+            //return the HTML object, the two functions nad the ID
+            return {object: self.components.alert.skeleton,
+                id: self.components.alert.id,
+                timeOut: self.alertTimeOut
             };
         },
         randomId: function() {
@@ -425,6 +536,8 @@ var UI = UI || (function($) {
         modal: UserInterface.modal,
         progressbar: UserInterface.progressbar,
         button: UserInterface.button,
+        alert: UserInterface.alert,
+        toast: UserInterface.toast,
         log: UserInterface.log,
         wipeComponents: UserInterface.wipeComponents
     }
