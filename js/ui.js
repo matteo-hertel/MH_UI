@@ -510,6 +510,105 @@ var UI = UI || (function($) {
                 timeOut: self.alertTimeOut
             };
         },
+        toast: function(data) {
+
+            var self = UserInterface;
+            // if an object is passed add the data to the right component
+            if (typeof data === "object") {
+
+                self.components.toast = data;
+                //create the alert
+                return self.toastCreate();
+            }
+        },
+        toastAppend: function(data) {
+            var self = UserInterface;
+
+            if (!data.html) {
+                return false;
+            }
+
+            var toast_id = data.id || self.components.toast.id;
+
+            $("#".toast_id).append(data.html);
+        },
+        toastCreate: function() {
+            var self = UserInterface;
+            var component = "toast";
+
+            if (typeof self.components.toast.callback === "function") {
+                var callback = self.components.toast.callback;
+                self.components.toast.callback = null;
+            }
+            var alert = UI.alert(self.components.toast);
+            self.components.toast.skeleton = $(alert.object);
+            self.components.toast.skeleton.id = alert.id;
+
+            if (typeof self.components[component].data === "object") {
+                self.components[component].data.dismiss = "alert";
+            } else {
+                self.components[component].data = {dismiss: "alert"}
+            }
+
+            if (self.components.toast.position && typeof self.components.toast.position === "string") {
+
+                switch (self.components.toast.position) {
+
+                    case "top-right":
+
+                        self.components.toast.skeleton.css("position", "fixed");
+                        self.components.toast.skeleton.css("right", 10);
+                        self.components.toast.skeleton.css("top", 100);
+                        break;
+
+                    case "top-left":
+
+                        self.components.toast.skeleton.css("position", "fixed");
+                        self.components.toast.skeleton.css("left", 10);
+                        self.components.toast.skeleton.css("top", 100);
+                        break;
+
+                    case "bottom-left":
+
+                        self.components.toast.skeleton.css("position", "fixed");
+                        self.components.toast.skeleton.css("left", 10);
+                        self.components.toast.skeleton.css("bottom", 50);
+                        break;
+
+                    case "bottom-right":
+
+                        self.components.toast.skeleton.css("position", "fixed");
+                        self.components.toast.skeleton.css("right", 10);
+                        self.components.toast.skeleton.css("bottom", 50);
+                        break;
+                }
+            }
+            else if (self.components.toast.position && typeof self.components.toast.position === "object") {
+                self.components.toast.skeleton.css("position", "fixed");
+                for (var css in self.components.toast.position) {
+                    self.components.toast.skeleton.css(css, self.components.toast.position[css]);
+                }
+
+            }
+
+            for (var data in self.components[component].data) {
+                if (self.components[component].data.hasOwnProperty(data)) {
+                    self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
+                }
+            }
+
+            // fire the callback function is a valid function is passed
+            if (typeof callback === "function") {
+                callback(self.components.alert.skeleton);
+            }
+            $("#" + self.components.toast.skeleton.id).alert();
+
+            //return the HTML object, the two functions nad the ID
+            return {object: self.components.toast.skeleton,
+                id: self.components.toast.skeleton.id,
+                append: self.toastAppend
+            };
+        },
         randomId: function() {
             var text = "";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
