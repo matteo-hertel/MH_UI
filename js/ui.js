@@ -353,7 +353,7 @@ var UI = UI || (function($) {
             //create the class
             self.components.button.default = self.components.button.default !== undefined ? self.components.button.default : true
             self.components.button.level = self.components.button.level ? "btn-" + self.components.button.level : (self.components.button.default ? "btn-default" : "");
-            self.components.button.class = self.components.button.class ? self.components.button.class + (self.components.button.default ? "btn " : "") + self.components.button.level : (self.components.button.default ? "btn " : "") + self.components.button.level;
+            self.components.button.class = self.components.button.class ? self.components.button.class + " " + (self.components.button.default ? "btn " : "") + self.components.button.level : (self.components.button.default ? "btn " : "") + self.components.button.level;
             self.components.button.disabled ? self.components.button.class += " disabled" : null;
             self.components.button.size ? self.components.button.class += " btn-" + self.components.button.size : null;
             // set the id
@@ -528,9 +528,11 @@ var UI = UI || (function($) {
                 return false;
             }
 
-            var toast_id = data.id || self.components.toast.id;
-
-            $("#".toast_id).append(data.html);
+            if (data.id) {
+                $("#" + toast_id).append(data.html);
+            } else {
+                self.components.toast.skeleton.append(data.html);
+            }
         },
         toastCreate: function() {
             var self = UserInterface;
@@ -547,7 +549,7 @@ var UI = UI || (function($) {
             if (typeof self.components[component].data === "object") {
                 self.components[component].data.dismiss = "alert";
             } else {
-                self.components[component].data = {dismiss: "alert"}
+                self.components[component].data = {dismiss: "alert"};
             }
 
             if (self.components.toast.position && typeof self.components.toast.position === "string") {
@@ -587,6 +589,13 @@ var UI = UI || (function($) {
                 self.components.toast.skeleton.css("position", "fixed");
                 for (var css in self.components.toast.position) {
                     self.components.toast.skeleton.css(css, self.components.toast.position[css]);
+                }
+
+            }
+
+            else if (typeof self.components.toast.append === "object") {
+                for (var elem in self.components.toast.append) {
+                    self.toastAppend({html: self.components.toast.append[elem]})
                 }
 
             }
