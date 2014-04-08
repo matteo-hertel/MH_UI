@@ -1,5 +1,5 @@
 /*
- * UI wrapper, usefull to create UI element without hardonding stuff
+ * UI wrapper, usefull to create UI element without hardcoding stuff
  *
  * Public methods: modal, progressbar
  *
@@ -7,7 +7,7 @@
  */
 
 
-var UI = UI || (function($) {
+var UI = UI || (function($, window, undefined) {
     var UserInterface = {
         // set the components to an empty object than we can store
         // here our components the first components is actually an array where the ids are stored
@@ -40,23 +40,22 @@ var UI = UI || (function($) {
             }
 
             // the return object will be like:
-            // object: the actual modal, the Jquery object that can be manipulated
-            // title: the method to overwrite the title
-            // titleAppend: the method to append content to the title
-            // body: the method to overwrite the body
-            // bodyAppend the method to append content to the title
-            // footer, the method to append objects to the footer
-            // show: a method to show the modal
-            // hide: a method to hide the modal
-
             return {
+                // object: the actual modal, the Jquery object that can be manipulated
                 object: self.components.modal.skeleton.object,
+                // title: the method to overwrite the title
                 title: self.components.modal.skeleton.title,
+                // titleAppend: the method to append content to the title
                 titleAppend: self.components.modal.skeleton.titleAppend,
+                // body: the method to overwrite the body
                 body: self.components.modal.skeleton.body,
+                // bodyAppend the method to append content to the title
                 bodyAppend: self.components.modal.skeleton.bodyAppend,
+                // footer, the method to append objects to the footer
                 footer: self.components.modal.skeleton.footer,
+                // show: a method to show the modal
                 show: self.components.modal.skeleton.show,
+                // hide: a method to hide the modal
                 hide: self.components.modal.skeleton.hide
             };
         },
@@ -351,7 +350,7 @@ var UI = UI || (function($) {
             // set the text
             self.components.button.text = self.components.button.text || "";
             //create the class
-            self.components.button.default = self.components.button.default !== undefined ? self.components.button.default : true
+            self.components.button.default = self.components.button.default !== undefined ? self.components.button.default : true;
             self.components.button.level = self.components.button.level ? "btn-" + self.components.button.level : (self.components.button.default ? "btn-default" : "");
             self.components.button.class = self.components.button.class ? self.components.button.class + " " + (self.components.button.default ? "btn " : "") + self.components.button.level : (self.components.button.default ? "btn " : "") + self.components.button.level;
             self.components.button.disabled ? self.components.button.class += " disabled" : null;
@@ -416,13 +415,36 @@ var UI = UI || (function($) {
             if (typeof self.components.button.callback === "function") {
                 self.components.button.callback(self.components.button.skeleton);
             }
-            //return the HTML object, the two functions nad the ID
+            //return the HTML object, the two functions and the ID
             return {object: self.components.button.skeleton,
                 changeText: self.buttonChangeText,
                 addActions: self.buttonAddActions,
                 id: self.components.button.id
             };
         },
+        /*
+         * Alert
+         *
+         * By calling this method and passing an object with the right properties
+         * the process will create an alert, insert the information passed and return the
+         * HTML, the id and the timeOut method
+         *
+         * Object properties:
+         *     html: the HTML for the body of the alert
+         *     level:  Twitter Bootstrap message level: success, info, danger, warning
+         *     class : {optional} a custom class for the alert
+         *     dismissable: if true is passed the "X" to close the alert will be added
+         *     id: {optional} an optional id can be passed, if no id is provided a random id will be generated
+         *     time: {optional} object with the following properties:
+         *          time: integer that represent the milliseconds
+         *          effect: {optional} the jQuery effect to hide the alert eg fadeOut, slideUp
+         *          effectTime: {optional} the duration of the effect in milliseconds
+         *     data: {optional} object with key the name of the data and as value the value of the data element
+         *     callback: {optional} a callback function that will be executed once the modal is displayed
+         *
+         *
+         *
+         */
         alert: function(data) {
 
             var self = UserInterface;
@@ -436,7 +458,8 @@ var UI = UI || (function($) {
         },
         alertBuildComponent: function() {
             var self = UserInterface;
-            // set the text
+            // set the html NOTE: in this component HTML gives more flexibility to the dev
+            // so rather than use text, HTML is allowed
             self.components.alert.html = self.components.alert.html || "";
             //create the class
             self.components.alert.level = self.components.alert.level ? "alert-" + self.components.alert.level : "alert-info";
@@ -450,18 +473,28 @@ var UI = UI || (function($) {
         },
         alertTimeOut: function(data) {
             var self = UserInterface;
-
+            // if a number is passed let's use it as time
+            if (typeof data === "number") {
+                var temp_obj = {time: data};
+                data = temp_object;
+            }
+            //the core is the time, if not time is passed exit the function
             if (!data.time) {
                 return false;
             }
-
+            // an id is needed if no id is provided than use the last alert id
             var alert_id = data.id || self.components.alert.id;
+            // a simple timeout to destroy the alert
             setTimeout(function() {
+                // if an effect is passed than use it
                 if (data.effect) {
+                    // if no effect time passed than use 400 ms
                     $("#" + alert_id)[data.effect](data.effectTime || 400, function() {
+                        // alert("close") will remove the alert from the DOM
                         $("#" + alert_id).alert("close");
                     });
                 } else {
+                    // alert("close") will remove the alert from the DOM
                     $("#" + alert_id).alert("close");
                 }
             }, data.time);
@@ -470,46 +503,84 @@ var UI = UI || (function($) {
         // let's create the alert
         alertCreate: function() {
             var self = UserInterface;
+            // name the component
             var component = "alert";
             // build the components
             self.alertBuildComponent();
-            // the button finally
+            // from here the magic begins
             self.components.alert.skeleton = $("<div/>", {
                 html: self.components.alert.html,
                 class: self.components.alert.class,
                 id: self.components.alert.id});
-
+            // if alert.data is an object lets use the key for the data- name and the value for the data value
             if (typeof self.components[component].data === "object") {
                 for (var data in self.components[component].data) {
+                    // a simple check to be sure the key exist
                     if (self.components[component].data.hasOwnProperty(data)) {
                         self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
                     }
                 }
             }
-
+            // add the "X" to close if dismissable is true
             if (self.components.alert.dismissable) {
                 self.components.alert.skeleton.prepend(UI.button({default: false, class: "close", text: "x", data: {dismiss: "alert"}}).object);
+            }
+
+            // init the alert, actually the alert can work without this line BUT
+            // to user the alert("close") and the data-dismiss = "alert" we need to init the alert 
+            $("#" + self.components.alert.id).alert();
+
+            // if time is passed let's pass the data to the right method
+            if (self.components.alert.time) {
+                self.alertTimeOut(self.components.alert.time);
             }
 
             // fire the callback function is a valid function is passed
             if (typeof self.components.alert.callback === "function") {
                 self.components.alert.callback(self.components.alert.skeleton);
             }
-            $("#" + self.components.alert.id).alert();
-
-            if (self.components.alert.time) {
-                self.alertTimeOut({
-                    time: self.components.alert.time,
-                    effect: self.components.alert.effect || false,
-                    effectTime: self.components.alert.effectTime || false
-                });
-            }
-            //return the HTML object, the two functions nad the ID
+            //return the HTML object, the id and the timeOut method
             return {object: self.components.alert.skeleton,
                 id: self.components.alert.id,
                 timeOut: self.alertTimeOut
             };
         },
+        /*
+         * Toast
+         * 
+         * A toast according to microsoft is :
+         * 
+         * "A transient message to the user that contains relevant, time-sensitive 
+         *  information and provides quick access to related content in an app."
+         *
+         * By calling this method and passing an object with the right properties
+         * the process will create a toast, insert the information passed and return the
+         * HTML, the id and the append method
+         *
+         * Object properties:
+         *     html: the HTML for the body of the alert
+         *     level:  Twitter Bootstrap message level: success, info, danger, warning
+         *     class : {optional} a custom class for the alert
+         *     dismissable: if true is passed the "X" to close the alert will be added
+         *     position: the position of the toast, there are 4 predefined position:
+         *          top-left, top-right, bottom-left, bottom-right, if you want to 
+         *          create the toast in a different location you can pass on object
+         *          with the css properties like right, top etc, avery element will be 
+         *          passed to the jQuery .css()
+         *     append: {optional} if you want to add a jQuery object to the toast, 
+         *              just create an object with any number of element the value of every key-value pair
+         *              will be added to the toast
+         *     id: {optional} an optional id can be passed, if no id is provided a random id will be generated
+         *     time: {optional} object with the following properties:
+         *          time: integer that represent the milliseconds
+         *          effect: {optional} the jQuery effect to hide the alert eg fadeOut, slideUp
+         *          effectTime: {optional} the duration of the effect in milliseconds
+         *     data: {optional} object with key the name of the data and as value the value of the data element
+         *     callback: {optional} a callback function that will be executed once the modal is displayed
+         *
+         *
+         *
+         */
         toast: function(data) {
 
             var self = UserInterface;
@@ -517,41 +588,69 @@ var UI = UI || (function($) {
             if (typeof data === "object") {
 
                 self.components.toast = data;
-                //create the alert
+                //create the toast
                 return self.toastCreate();
             }
+
+            else if (typeof data === "string") {
+
+                self.components.toast = {
+                    html: data,
+                    level: "info",
+                    time: 5000
+                };
+                //create the toast
+                return self.toastCreate();
+            }
+
         },
+        // append method, use this to append stuff to the toast
         toastAppend: function(data) {
             var self = UserInterface;
-
+            // if a string is passed lets assume that is HTML
+            if (typeof data === "string") {
+                var temp_obj = {html: data};
+                data = temp_object;
+            }
+            // no HTML exit the function
             if (!data.html) {
                 return false;
             }
-
+            //if an id is passed use is as query selector
             if (data.id) {
                 $("#" + toast_id).append(data.html);
             } else {
+                // if no id let's assume that the toast is not in the DOM yet
+                // so the skeleton will be used
                 self.components.toast.skeleton.append(data.html);
             }
         },
         toastCreate: function() {
             var self = UserInterface;
+            // name the component
             var component = "toast";
-
+            // get rid of the callback and store it in a variable
             if (typeof self.components.toast.callback === "function") {
                 var callback = self.components.toast.callback;
                 self.components.toast.callback = null;
             }
+            // a toast is nothing more than an alert floating on the screen
+            // so let's use the UI to create a toast
             var alert = UI.alert(self.components.toast);
+            // the returning object is wrappend in jquery
             self.components.toast.skeleton = $(alert.object);
+            // fetch the ID
             self.components.toast.skeleton.id = alert.id;
 
+            // the toast can be dismissed by clicking on it if a data is passed 
+            // add the dismiss to that object
             if (typeof self.components[component].data === "object") {
                 self.components[component].data.dismiss = "alert";
             } else {
+                // otherwise create a new data object
                 self.components[component].data = {dismiss: "alert"};
             }
-
+            // if a string is passed check for a custom position
             if (self.components.toast.position && typeof self.components.toast.position === "string") {
 
                 switch (self.components.toast.position) {
@@ -585,6 +684,7 @@ var UI = UI || (function($) {
                         break;
                 }
             }
+            // if an object is pass, let's pass the element to the .css()
             else if (self.components.toast.position && typeof self.components.toast.position === "object") {
                 self.components.toast.skeleton.css("position", "fixed");
                 for (var css in self.components.toast.position) {
@@ -592,14 +692,14 @@ var UI = UI || (function($) {
                 }
 
             }
-
-            else if (typeof self.components.toast.append === "object") {
+            // if append is an object let's all its element to the Toast
+            if (typeof self.components.toast.append === "object") {
                 for (var elem in self.components.toast.append) {
-                    self.toastAppend({html: self.components.toast.append[elem]})
+                    self.toastAppend({html: self.components.toast.append[elem]});
                 }
 
             }
-
+            // if toast.data is an object lets use the key for the data- name and the value for the data value
             for (var data in self.components[component].data) {
                 if (self.components[component].data.hasOwnProperty(data)) {
                     self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
@@ -612,7 +712,7 @@ var UI = UI || (function($) {
             }
             $("#" + self.components.toast.skeleton.id).alert();
 
-            //return the HTML object, the two functions nad the ID
+            //return the HTML object, the id and the append method
             return {object: self.components.toast.skeleton,
                 id: self.components.toast.skeleton.id,
                 append: self.toastAppend
@@ -628,7 +728,7 @@ var UI = UI || (function($) {
             return text;
         },
         log: function() {
-            return UserInterface.components
+            return UserInterface.components;
         },
         wipeComponents: function() {
             var self = UserInterface;
@@ -648,6 +748,6 @@ var UI = UI || (function($) {
         toast: UserInterface.toast,
         log: UserInterface.log,
         wipeComponents: UserInterface.wipeComponents
-    }
+    };
 
-})(jQuery);
+})(jQuery, window);
