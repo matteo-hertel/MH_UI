@@ -11,7 +11,8 @@ var UI = UI || (function($, window, undefined) {
     var UserInterface = {
         // set the components to an empty object than we can store
         // here our components the first components is actually an array where the ids are stored
-        components: {ids: []},
+        components: {ids: [],
+            skeletons: {}},
         /*
          * Modal
          *
@@ -221,7 +222,7 @@ var UI = UI || (function($, window, undefined) {
                 // set the percentage
                 self.components.progressbar.percentage = parseInt(data);
                 // return the progressbar
-                return self.createProgressbar();
+                return self.progressbarCreate();
             }
         },
         // a function to build the class string that will be used in the progressbar
@@ -248,7 +249,14 @@ var UI = UI || (function($, window, undefined) {
         progressbarAnimate: function(obj) {
             var self = UserInterface;
             //get the progressbar and apply the jQuery animate
-            var progressbar = $("#" + (obj.id || self.components.progressbar.id));
+            var id = obj.id || self.components.progressbar.id;
+            var progressbar = $("#" + id);
+            if (typeof obj === "number") {
+                var temp_object = {
+                    time: data,
+                    percentage: 100};
+                obj = temp_object;
+            }
             // the jQuery animation in percentage is bugged, so the right way is to get the parent width and
             // transform thepercentage in pixels, easy math:
             // (parent widht * percentaqge)/100
@@ -261,6 +269,8 @@ var UI = UI || (function($, window, undefined) {
                     obj.callback();
                 }
             });
+            return{object: $("#" + id),
+                id: id}
         },
         // the core function that will create the progressbar
         progressbarCreate: function() {
@@ -620,7 +630,7 @@ var UI = UI || (function($, window, undefined) {
             var self = UserInterface;
             // if a string is passed lets assume that is HTML
             if (typeof data === "string") {
-                var temp_obj = {html: data};
+                var temp_object = {html: data};
                 data = temp_object;
             }
             // no HTML exit the function
