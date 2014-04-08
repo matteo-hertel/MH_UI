@@ -455,6 +455,16 @@ var UI = UI || (function($, window, undefined) {
                 //create the alert
                 return self.alertCreate();
             }
+
+            else if (typeof data === "string") {
+
+                self.components.alert = {
+                    html: data,
+                    level: "info",
+                };
+                //create the toast
+                return self.alertCreate();
+            }
         },
         alertBuildComponent: function() {
             var self = UserInterface;
@@ -475,7 +485,7 @@ var UI = UI || (function($, window, undefined) {
             var self = UserInterface;
             // if a number is passed let's use it as time
             if (typeof data === "number") {
-                var temp_obj = {time: data};
+                var temp_object = {time: data};
                 data = temp_object;
             }
             //the core is the time, if not time is passed exit the function
@@ -597,7 +607,8 @@ var UI = UI || (function($, window, undefined) {
                 self.components.toast = {
                     html: data,
                     level: "info",
-                    time: 5000
+                    time: 5000,
+                    position: "top-right"
                 };
                 //create the toast
                 return self.toastCreate();

@@ -198,6 +198,8 @@
                         self.config.container = self.config.components.children(".container");
                         self.progressbar();
                         self.buttons();
+                        self.alerts();
+                        self.toasts();
                     },
                     progressbar: function(){
                         var self = UIElements;
@@ -221,8 +223,8 @@
                     },
                     buttons: function(){
                         var self = UIElements;
-                        self.config.container.append($("<h2/>", {text:"Buttons"}));
-                        self.config.container.append($("<p/>", {text:"A couple of example button, click for an action double click for the code"}));
+                        self.config.container.append($("<h2/>", {text:"Buttons/Modals"}));
+                        self.config.container.append($("<p/>", {text:"A couple of example button, click for an action double click to open a modal with the code"}));
                         var button1 = UI.button({level:"success", size: "lg", text:"Button number 1", actions:{
                                 click: function(){$(this).addClass("btn-warning")},
                                 dblclick: function(){
@@ -236,10 +238,47 @@
                                  }
                         }})
                     var button3 = UI.button("Default button");
-                    button3.addActions({click:function(){alert("hello")}})
                         self.config.container.append(button1.object);
                         self.config.container.append(button2.object);
-                        self.config.container.append(button3.object);
+                    },
+                    alerts:function(){
+                        var self = UIElements;
+                        self.config.container.append($("<h2/>", {text:"Alert"}));
+                        self.config.container.append($("<p/>", {text:"Two alerts, one dismissable the other one is not"}));
+                        var alert1 = UI.alert({
+                            level:"success", 
+                            dismissable:true, 
+                            html:"<h4>Hello</h4><p>Thank you to visit the MH_UI page"}
+                                );
+                        var alert2 = UI.alert("<h4>Awesome</h4><p>I'm one-line of code alert");
+                        
+                        self.config.container.append(alert1.object);
+                        self.config.container.append(alert2.object);
+                    },
+                    toasts:function(){
+                        var self = UIElements;
+                        self.config.container.append($("<h2/>", {text:"Toast"}));
+                        self.config.container.append($("<p/>", {text:"Some toast examples, click on the button to open the toast"}));
+                        var toast1 = UI.button("bottom-left Toast");
+                        var toast2 = UI.button("top-right Toast");
+                        
+                        self.config.container.append(toast1.object);
+                        self.config.container.append(toast2.object);
+                        
+                        toast1.addActions({
+                            click:function(){
+                                $("body").append(
+                                        UI.toast({ 
+                                            level:"warning",
+                                            position: "bottom-left",
+                                            html:"<h4>Hi</h4><p>I'm a toast, I will not disappear until you click on me :D</p>"
+                                        }).object);
+                                    }
+                                }, toast1.object
+                                        );
+                                
+                        toast2.addActions({click:function(){$("body").append(
+                                        UI.toast("<h4>Whoa!</h4><p>one-line code toast</p>").object)}});
                     }
                 };
 
