@@ -520,6 +520,16 @@ var UI = UI || (function($, window, undefined) {
             }, data.time);
 
         },
+        alertAppend:function(id, obj){
+            var self = UserInterface;
+            
+            
+            self.components.skeletons.alert[id].append(obj);
+            return {
+                object:self.components.skeletons[id]
+                
+            };
+        },
         // let's create the alert
         alertCreate: function() {
             var self = UserInterface;
@@ -527,23 +537,21 @@ var UI = UI || (function($, window, undefined) {
             var component = "alert";
             // build the components
             self.alertBuildComponent();
-            // from here the magic begins
-            self.components.alert.skeleton = $("<div/>", {
+            // from here the magic begins.
+            if (typeof self.components.skeletons.alert !== "object"){
+                self.components.skeletons.alert = {};
+            }
+            self.components.skeletons.alert[self.components.alert.id] = $("<div/>", {
                 html: self.components.alert.html,
                 class: self.components.alert.class,
                 id: self.components.alert.id});
-            // if alert.data is an object lets use the key for the data- name and the value for the data value
-            if (typeof self.components[component].data === "object") {
-                for (var data in self.components[component].data) {
-                    // a simple check to be sure the key exist
-                    if (self.components[component].data.hasOwnProperty(data)) {
-                        self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
-                    }
-                }
+            //if alert.data is an object lets use the key for the data- name and the value for the data value
+            if (typeof self.components.alert.data === "object") {
+                self.addData(self.components.skeletons.alert[self.components.alert.id], self.components.alert.data)
             }
             // add the "X" to close if dismissable is true
             if (self.components.alert.dismissable) {
-                self.components.alert.skeleton.prepend(UI.button({default: false, class: "close", text: "x", data: {dismiss: "alert"}}).object);
+                self.components.skeletons.alert[self.components.alert.id].prepend(UI.button({default: false, class: "close", text: "x", data: {dismiss: "alert"}}).object);
             }
 
             // init the alert, actually the alert can work without this line BUT
@@ -557,12 +565,13 @@ var UI = UI || (function($, window, undefined) {
 
             // fire the callback function is a valid function is passed
             if (typeof self.components.alert.callback === "function") {
-                self.components.alert.callback(self.components.alert.skeleton);
+                self.components.alert.callback(self.components.skeletons.alert[self.components.alert.id]);
             }
             //return the HTML object, the id and the timeOut method
-            return {object: self.components.alert.skeleton,
-                id: self.components.alert.id,
-                timeOut: self.alertTimeOut
+            return {object: self.components.skeletons.alert[self.components.alert.id],
+                    id: self.components.alert.id,
+                    timeOut: self.alertTimeOut,
+                    append: self.partial(self.alertAppend, self.components.alert.id)
             };
         },
         /*
@@ -748,13 +757,28 @@ var UI = UI || (function($, window, undefined) {
 
             return text;
         },
+        partial : function(func /*, 0..n args */) {
+            var args = Array.prototype.slice.call(arguments, 1);
+                return function() {
+                    var allArguments = args.concat(Array.prototype.slice.call(arguments));
+                    return func.apply(this, allArguments);
+                };
+        },
+        addData:function(object, data){
+                for (var item in data) {
+                    // a simple check to be sure the key exist
+                    if (data.hasOwnProperty(item)) {
+                        object.attr("data-" + data, self.components[component].data[data]);
+                    }
+                }
+        },
         log: function() {
             return UserInterface.components;
         },
         wipeComponents: function() {
             var self = UserInterface;
 
-            for (id in self.components.ids) {
+            for (var id in self.components.ids) {
                 $("#" + self.components.ids[id]).remove();
             }
             self.component = {};
