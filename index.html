@@ -147,7 +147,7 @@
                         }
                         try {
                             var execute = eval(content);
-                            self.config.result.html(execute.object).fadeIn(400)
+                            self.config.result.append(execute).fadeIn(400)
                         }
                         catch (error) {
                             self.config.error.html("<h3>An error occurred</h3><br />" + error).show()
@@ -208,7 +208,7 @@
                         }));
                         self.config.container.append($("<p/>", {text:"An empty progressbar is created, you can adjust the widht with the slider"}));
                         var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0})
-                        self.config.container.append(progressbar.object);
+                        self.config.container.append(progressbar);
                         self.config.container.append($("<div/>", {id:"progress_bar_slider"}));
                         
                         $( "#progress_bar_slider" ).slider({
@@ -217,7 +217,7 @@
                         max: 100,
                         value: 0,
                         slide: function( event, ui ) {
-                            progressbar.animate({time:1, percentage: ui.value, id: progressbar.id})
+                            progressbar.animate({time:1, percentage: ui.value})
                         }
                       });
                     },
@@ -237,9 +237,8 @@
                                         UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var button2=UI.button({level:"danger",<br /><br />text:"Button number 2",<br />actions:{<br />click:function(){<br />button2.changeText({text:"Danger!", id: button2.id})<br />},<br />dblclick:function(){<br />}<br />}});</pre>'})
                                  }
                         }})
-                    var button3 = UI.button("Default button");
-                        self.config.container.append(button1.object);
-                        self.config.container.append(button2.object);
+                        self.config.container.append(button1);
+                        self.config.container.append(button2);
                     },
                     alerts:function(){
                         var self = UIElements;
@@ -260,8 +259,8 @@
                         var toast1 = UI.button("bottom-left Toast");
                         var toast2 = UI.button("top-right Toast");
                         
-                        self.config.container.append(toast1.object);
-                        self.config.container.append(toast2.object);
+                        self.config.container.append(toast1);
+                        self.config.container.append(toast2);
                         
                         toast1.addActions({
                             click:function(){
@@ -270,13 +269,12 @@
                                             level:"warning",
                                             position: "bottom-left",
                                             html:"<h4>Hi</h4><p>I'm a toast, I will not disappear until you click on me :D</p>"
-                                        }).object);
+                                        }));
                                     }
-                                }, toast1.object
-                                        );
+                                });
                                 
                         toast2.addActions({click:function(){$("body").append(
-                                        UI.toast("<h4>Whoa!</h4><p>one-line code toast</p>").object)}});
+                                        UI.toast("<h4>Whoa!</h4><p>one-line code toast</p>"))}});
                     }
                 };
 

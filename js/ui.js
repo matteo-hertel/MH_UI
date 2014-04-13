@@ -84,8 +84,7 @@ var UI = UI || (function($, window, undefined) {
                     //Header
                     $("<div/>", {class: "modal-header"}).append(
                     //the x close button
-                    UI.button({class: "close", default: false, text: "x", data: {dismiss: "modal"}}).object
-                    )
+                    UI.button({class: "close", default: false, text: "x", data: {dismiss: "modal"}}))
                     ).append(
                     //Body
                     $("<div/>", {class: "modal-body"})
@@ -154,7 +153,7 @@ var UI = UI || (function($, window, undefined) {
                             data: {
                                 dismiss: "modal"
                             }
-                        }).object);
+                        }));
             }
             // add the content using the method above
             //note the append to the title to avoi the deltion of the cross to close the modal
@@ -226,6 +225,8 @@ var UI = UI || (function($, window, undefined) {
         // a function to build the class string that will be used in the progressbar
         progressbarBuildComponent: function() {
             var self = UserInterface;
+            self.components.progressbar.progressbarID = self.randomId();
+            self.components.progressbar.id = self.components.progressbar.id || self.components.progressbar.progressbarID;
             // if no class property is passed start with an empty string 
             self.components.progressbar.class = self.components.progressbar.class || "";
             // add the class progress
@@ -244,65 +245,63 @@ var UI = UI || (function($, window, undefined) {
          *   a valid function is passed the callback will be executed
          *
          */
-        progressbarAnimate: function(obj) {
-            var self = UserInterface;
-            //get the progressbar and apply the jQuery animate
-            var id = obj.id || self.components.progressbar.id;
-            var progressbar = $("#" + id);
-            if (typeof obj === "number") {
+        progressbarAnimate: function(object, data) {
+
+            if (typeof data === "number") {
                 var temp_object = {
                     time: data,
                     percentage: 100};
-                obj = temp_object;
+                data = temp_object;
+            }
+
+            if (!data.percentage) {
+                return false;
             }
             // the jQuery animation in percentage is bugged, so the right way is to get the parent width and
             // transform thepercentage in pixels, easy math:
             // (parent widht * percentaqge)/100
-            var width = progressbar.width();
-            $(progressbar.children()[0]).animate({
-                width: (width * obj.percentage) / 100 + "px"
-            }, obj.time, function() {
+            var width = object.width();
+            $(object.children()[0]).animate({
+                width: (width * data.percentage) / 100 + "px"
+            }, data.time, function() {
                 // if a callback is provided fire it
-                if (typeof obj.callback === "function") {
-                    obj.callback();
+                if (typeof data.callback === "function") {
+                    data.callback();
                 }
             });
-            return{object: $("#" + id),
-                id: id}
+            return object
         },
         // the core function that will create the progressbar
         progressbarCreate: function() {
-            var self = UserInterface;
-            var component = "progressbar";
+            var self = UserInterface, out;
+
             //build the class and add an ID
             self.progressbarBuildComponent();
-            var progressbar_id = self.components.progressbar.id || self.randomId();
-            self.components.progressbar.id = progressbar_id;
             // create the container for the bar
-            self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class, id: self.components.progressbar.id}).append(
+            var component = $("<div/>", {class: self.components.progressbar.class, id: self.components.progressbar.id}).append(
                     //append the bar itself
                     $("<div/>", {class: self.components.progressbar.level,
                         style: "width: " + (parseInt(self.components.progressbar.percentage) || 0) + "%"
                     })
                     );
 
-            if (typeof self.components[component].data === "object") {
-                for (var data in self.components[component].data) {
-                    if (self.components[component].data.hasOwnProperty(data)) {
-                        self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
-                    }
-                }
+            var id = self.components.progressbar.progressbarID;
+
+            self.components.skeletons[id] = component;
+
+            if (typeof self.components.progressbar.data === "object") {
+                self.addData(self.components.skeletons[id], self.components.progressbar.data);
             }
             // fire the callback function is a valid function is passed
             if (typeof self.components.progressbar.callback === "function") {
-                self.components.progressbar.callback(self.components.progressbar.skeleton);
+                self.components.progressbar.callback(self.components.skeletons[id]);
             }
             // return the htmo object, the animate function and the ID
-            return {
-                object: self.components.progressbar.skeleton,
-                animate: self.progressbarAnimate,
-                id: self.components.progressbar.id
-            };
+
+            out = new Array();
+            out.push(self.components.skeletons[id]);
+            out.animate = self.partial(self.progressbarAnimate, self.components.skeletons[id]);
+            return out;
 
         },
         /*
@@ -343,10 +342,7 @@ var UI = UI || (function($, window, undefined) {
             }
             // if a string is passed the user want a default button
             else if (typeof data === "string") {
-                //empty object for the button
-                self.components.button = {};
-                // set the text, default and level
-                self.components.button.text = data;
+                self.components.button = $.extend({}, self.default.button, {text: data})
                 // return the button
                 return self.buttonCreate();
             }
@@ -354,6 +350,7 @@ var UI = UI || (function($, window, undefined) {
         //this function will take care of all the borgin stuff like create the right class and so on
         buttonBuildComponent: function() {
             var self = UserInterface;
+            self.components.button.buttonID = self.randomId();
             // set the text
             self.components.button.text = self.components.button.text || "";
             //create the class
@@ -363,69 +360,68 @@ var UI = UI || (function($, window, undefined) {
             self.components.button.disabled ? self.components.button.class += " disabled" : null;
             self.components.button.size ? self.components.button.class += " btn-" + self.components.button.size : null;
             // set the id
-            self.components.button.id = self.components.button.id || self.randomId();
+            self.components.button.id = self.components.button.id || self.components.button.buttonID;
 
         },
         // want to chage the text after the button is created, no problem!
-        buttonChangeText: function(obj) {
-            var self = UserInterface;
+        buttonChangeText: function(object, data) {
+            if (typeof data === "string") {
+                var temp_object = {text: data};
+                data = temp_object;
+            }
             // if no text return false
-            if (!obj.text) {
+            if (!data.text) {
                 return false;
             }
-            // we need an Id, if no id is passed the last button id will be used
-            var id = obj.id || self.components.button.id;
             //change the text
-            $("#" + id).text(obj.text);
+            object.text(data.text);
 
         },
         // you forgot to bind some event to the button didn't you, this function will help you
-        buttonAddActions: function(obj, htmlObj) {
-            var self = UserInterface;
+        buttonAddActions: function(object, htmlObj) {
             // if no object return false
-            if (typeof obj !== "object") {
+            if (typeof htmlObj !== "object") {
                 return false;
             }
-            // we need Jquery object, if none is passed the function will use the last button object
-            var button_obj = htmlObj || self.components.button.skeleton;
             //bind the event
-            $(button_obj).on(obj);
+            object.on(htmlObj);
 
         },
         // let's create the button
         buttonCreate: function() {
-            var self = UserInterface;
-            var component = "button";
+            var self = UserInterface, out;
+
             // build the components
             self.buttonBuildComponent();
             // the button finally
-            self.components.button.skeleton = $("<button/>", {
+
+            var component = $("<button/>", {
                 type: "button", text: self.components.button.text,
                 class: self.components.button.class,
                 id: self.components.button.id});
+
+            var id = self.components.button.buttonID;
+
+            self.components.skeletons[id] = component;
             //if a valid action object is passed let's bind the events
             if (typeof self.components.button.actions === "object") {
-                self.components.button.skeleton.on(self.components.button.actions);
+                self.components.skeletons[id].on(self.components.button.actions);
             }
 
-            if (typeof self.components[component].data === "object") {
-                for (var data in self.components[component].data) {
-                    if (self.components[component].data.hasOwnProperty(data)) {
-                        self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
-                    }
-                }
+            if (typeof self.components.button.data === "object") {
+                self.addData(self.components.skeletons[id], self.components.button.data);
             }
 
             // fire the callback function is a valid function is passed
             if (typeof self.components.button.callback === "function") {
-                self.components.button.callback(self.components.button.skeleton);
+                self.components.button.callback(self.components.skeletons[id]);
             }
             //return the HTML object, the two functions and the ID
-            return {object: self.components.button.skeleton,
-                changeText: self.buttonChangeText,
-                addActions: self.buttonAddActions,
-                id: self.components.button.id
-            };
+            out = new Array();
+            out.push(self.components.skeletons[id]);
+            out.changeText = self.partial(self.buttonChangeText, self.components.skeletons[id]);
+            out.addActions = self.partial(self.buttonAddActions, self.components.skeletons[id]);
+            return out;
         },
         /*
          * Alert
@@ -463,8 +459,7 @@ var UI = UI || (function($, window, undefined) {
 
             else if (typeof data === "string") {
 
-                self.components.alert = $.extend({}, self.default.alert, {html: data});
-                //create the toast
+                self.components.alert = $.extend({}, self.default.alert, {html: data})
                 return self.alertCreate();
             }
         },
@@ -501,6 +496,7 @@ var UI = UI || (function($, window, undefined) {
                     object[data.effect](data.effectTime || 400, function() {
                         // alert("close") will remove the alert from the DOM
                         object.alert("close");
+
                     });
                 } else {
                     // alert("close") will remove the alert from the DOM
@@ -549,7 +545,7 @@ var UI = UI || (function($, window, undefined) {
                         dismiss: "alert"
                     }
                 }
-                ).object);
+                ));
             }
 
             // init the alert, actually the alert can work without this line BUT
@@ -623,42 +619,17 @@ var UI = UI || (function($, window, undefined) {
 
             else if (typeof data === "string") {
 
-                self.components.toast = {
-                    html: data,
-                    level: "info",
-                    time: 5000,
-                    position: "top-right"
-                };
+                self.components.toast = $.extend({}, self.default.toast, {html: data})
                 //create the toast
                 return self.toastCreate();
             }
 
         },
-        // append method, use this to append stuff to the toast
-        toastAppend: function(data) {
-            var self = UserInterface;
-            // if a string is passed lets assume that is HTML
-            if (typeof data === "string") {
-                var temp_object = {html: data};
-                data = temp_object;
-            }
-            // no HTML exit the function
-            if (!data.html) {
-                return false;
-            }
-            //if an id is passed use is as query selector
-            if (data.id) {
-                $("#" + toast_id).append(data.html);
-            } else {
-                // if no id let's assume that the toast is not in the DOM yet
-                // so the skeleton will be used
-                self.components.toast.skeleton.append(data.html);
-            }
-        },
         toastCreate: function() {
-            var self = UserInterface;
-            // name the component
-            var component = "toast";
+            var self = UserInterface, out;
+
+            self.components.toast.alertID = self.randomId();
+            self.components.toast.id = self.components.toast.id || self.components.toast.alertID;
             // get rid of the callback and store it in a variable
             if (typeof self.components.toast.callback === "function") {
                 var callback = self.components.toast.callback;
@@ -666,19 +637,19 @@ var UI = UI || (function($, window, undefined) {
             }
             // a toast is nothing more than an alert floating on the screen
             // so let's use the UI to create a toast
-            var alert = UI.alert(self.components.toast);
-            // the returning object is wrappend in jquery
-            self.components.toast.skeleton = $(alert.object);
-            // fetch the ID
-            self.components.toast.skeleton.id = alert.id;
+            var component = UI.alert(self.components.toast)[0];
+
+            var id = self.components.toast.alertID;
+
+            self.components.skeletons[id] = component;
 
             // the toast can be dismissed by clicking on it if a data is passed 
             // add the dismiss to that object
-            if (typeof self.components[component].data === "object") {
-                self.components[component].data.dismiss = "alert";
+            if (typeof self.components.toast.data === "object") {
+                self.components.toast.data.dismiss = "alert";
             } else {
                 // otherwise create a new data object
-                self.components[component].data = {dismiss: "alert"};
+                self.components.toast.data = {dismiss: "alert"};
             }
             // if a string is passed check for a custom position
             if (self.components.toast.position && typeof self.components.toast.position === "string") {
@@ -687,66 +658,64 @@ var UI = UI || (function($, window, undefined) {
 
                     case "top-right":
 
-                        self.components.toast.skeleton.css("position", "fixed");
-                        self.components.toast.skeleton.css("right", 10);
-                        self.components.toast.skeleton.css("top", 100);
+                        self.components.skeletons[id].css("position", "fixed");
+                        self.components.skeletons[id].css("right", 10);
+                        self.components.skeletons[id].css("top", 100);
                         break;
 
                     case "top-left":
 
-                        self.components.toast.skeleton.css("position", "fixed");
-                        self.components.toast.skeleton.css("left", 10);
-                        self.components.toast.skeleton.css("top", 100);
+                        self.components.skeletons[id].css("position", "fixed");
+                        self.components.skeletons[id].css("left", 10);
+                        self.components.skeletons[id].css("top", 100);
                         break;
 
                     case "bottom-left":
 
-                        self.components.toast.skeleton.css("position", "fixed");
-                        self.components.toast.skeleton.css("left", 10);
-                        self.components.toast.skeleton.css("bottom", 50);
+                        self.components.skeletons[id].css("position", "fixed");
+                        self.components.skeletons[id].css("left", 10);
+                        self.components.skeletons[id].css("bottom", 50);
                         break;
 
                     case "bottom-right":
 
-                        self.components.toast.skeleton.css("position", "fixed");
-                        self.components.toast.skeleton.css("right", 10);
-                        self.components.toast.skeleton.css("bottom", 50);
+                        self.components.skeletons[id].css("position", "fixed");
+                        self.components.skeletons[id].css("right", 10);
+                        self.components.skeletons[id].css("bottom", 50);
                         break;
                 }
             }
             // if an object is pass, let's pass the element to the .css()
             else if (self.components.toast.position && typeof self.components.toast.position === "object") {
-                self.components.toast.skeleton.css("position", "fixed");
+                self.components.skeletons[id].css("position", "fixed");
                 for (var css in self.components.toast.position) {
-                    self.components.toast.skeleton.css(css, self.components.toast.position[css]);
+                    self.components.skeletons[id].css(css, self.components.toast.position[css]);
                 }
 
             }
             // if append is an object let's all its element to the Toast
             if (typeof self.components.toast.append === "object") {
                 for (var elem in self.components.toast.append) {
-                    self.toastAppend({html: self.components.toast.append[elem]});
+                    self.alertAppend(self.components.skeletons[id], self.components.toast.append[elem]);
                 }
 
             }
             // if toast.data is an object lets use the key for the data- name and the value for the data value
-            for (var data in self.components[component].data) {
-                if (self.components[component].data.hasOwnProperty(data)) {
-                    self.components[component].skeleton.attr("data-" + data, self.components[component].data[data]);
-                }
+            if (typeof self.components.toast.data === "object") {
+                self.addData(self.components.skeletons[id], self.components.toast.data);
             }
 
             // fire the callback function is a valid function is passed
             if (typeof callback === "function") {
-                callback(self.components.alert.skeleton);
+                callback(self.components.skeletons[id]);
             }
-            $("#" + self.components.toast.skeleton.id).alert();
 
             //return the HTML object, the id and the append method
-            return {object: self.components.toast.skeleton,
-                id: self.components.toast.skeleton.id,
-                append: self.toastAppend
-            };
+            out = new Array();
+            out.push(self.components.skeletons[id]);
+            out.append = self.partial(self.alertAppend, self.components.skeletons[id]);
+            out.timeOut = self.partial(self.alertTimeOut, self.components.skeletons[id]);
+            return out;
         },
         randomId: function() {
             var text = "";
@@ -786,16 +755,26 @@ var UI = UI || (function($, window, undefined) {
             };
         },
         extend: function(name, object) {
-            UserInterface.default[name] = $.extend({}, self.default[name], object);
+            UserInterface.default[name] = $.extend({}, UserInterface.default[name], object);
         },
         getComponent: function(id) {
             return UserInterface.components.skeletons[id];
         },
         // set the default object, it can be extended by the function extend
-        default: {alert: {
+        default: {
+            alert: {
                 html: "",
                 level: "info",
                 dismissable: true
+            },
+            button: {
+                text: ""
+            },
+            toast: {
+                html: "",
+                level: "info",
+                time: 5000,
+                position: "top-right"
             }
         }
     };
