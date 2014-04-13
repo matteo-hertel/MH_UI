@@ -11,8 +11,7 @@ var UI = UI || (function($, window, undefined) {
     var UserInterface = {
         // set the components to an empty object than we can store
         // here our components the first components is actually an array where the ids are stored
-        components: {ids: [],
-            skeletons: {}},
+        components: {skeletons: {}},
         /*
          * Modal
          *
@@ -65,7 +64,6 @@ var UI = UI || (function($, window, undefined) {
             var component = "modal";
             //init the id, show, defaultFooter and skeleton proprietes to prevent call to undefined stuff
             self.components.modal.id = self.components.modal.id || self.randomId();
-            self.components.ids.push(self.components.modal.id);
             self.components.modal.show = self.components.modal.show !== undefined ? self.components.modal.show : true;
             self.components.modal.defaultFooter = self.components.modal.defaultFooter !== undefined ? self.components.modal.defaultFooter : true;
             self.components.modal.skeleton = {};
@@ -280,7 +278,6 @@ var UI = UI || (function($, window, undefined) {
             self.progressbarBuildComponent();
             var progressbar_id = self.components.progressbar.id || self.randomId();
             self.components.progressbar.id = progressbar_id;
-            self.components.ids.push(progressbar_id);
             // create the container for the bar
             self.components.progressbar.skeleton = $("<div/>", {class: self.components.progressbar.class, id: self.components.progressbar.id}).append(
                     //append the bar itself
@@ -367,8 +364,6 @@ var UI = UI || (function($, window, undefined) {
             self.components.button.size ? self.components.button.class += " btn-" + self.components.button.size : null;
             // set the id
             self.components.button.id = self.components.button.id || self.randomId();
-            // add the id to the tracking array
-            self.components.ids.push(self.components.button.id);
 
         },
         // want to chage the text after the button is created, no problem!
@@ -468,31 +463,27 @@ var UI = UI || (function($, window, undefined) {
 
             else if (typeof data === "string") {
 
-                self.components.alert = {
-                    html: data,
-                    level: "info",
-                };
+                self.components.alert = $.extend({}, self.default.alert, {html: data});
                 //create the toast
                 return self.alertCreate();
             }
         },
         alertBuildComponent: function() {
             var self = UserInterface;
+            //internal ID, if no id is provided the same id will be used for the HTML node
+            self.components.alert.alertID = self.randomId();
             // set the html NOTE: in this component HTML gives more flexibility to the dev
             // so rather than use text, HTML is allowed
             self.components.alert.html = self.components.alert.html || "";
             //create the class
             self.components.alert.level = self.components.alert.level ? "alert-" + self.components.alert.level : "alert-info";
-            self.components.alert.class = self.components.alert.class ? self.components.alert.class + "alert " + self.components.alert.level : "alert " + self.components.alert.level;
+            self.components.alert.class = self.components.alert.class ? self.components.alert.class + " " + "alert " + self.components.alert.level : "alert " + self.components.alert.level;
             self.components.alert.dismissable ? self.components.alert.class += " alert-dismissable" : null;
             // set the id
-            self.components.alert.id = self.components.alert.id || self.randomId();
-            // add the id to the tracking array
-            self.components.ids.push(self.components.alert.id);
+            self.components.alert.id = self.components.alert.id || self.components.alert.alertID;
 
         },
-        alertTimeOut: function(data) {
-            var self = UserInterface;
+        alertTimeOut: function(object, data) {
             // if a number is passed let's use it as time
             if (typeof data === "number") {
                 var temp_object = {time: data};
@@ -502,77 +493,86 @@ var UI = UI || (function($, window, undefined) {
             if (!data.time) {
                 return false;
             }
-            // an id is needed if no id is provided than use the last alert id
-            var alert_id = data.id || self.components.alert.id;
             // a simple timeout to destroy the alert
             setTimeout(function() {
                 // if an effect is passed than use it
                 if (data.effect) {
                     // if no effect time passed than use 400 ms
-                    $("#" + alert_id)[data.effect](data.effectTime || 400, function() {
+                    object[data.effect](data.effectTime || 400, function() {
                         // alert("close") will remove the alert from the DOM
-                        $("#" + alert_id).alert("close");
+                        object.alert("close");
                     });
                 } else {
                     // alert("close") will remove the alert from the DOM
-                    $("#" + alert_id).alert("close");
+                    object.alert("close");
                 }
             }, data.time);
 
+            return object;
+
         },
-        alertAppend:function(id, obj){
-            var self = UserInterface;
-            
-            
-            self.components.skeletons.alert[id].append(obj);
-            return {
-                object:self.components.skeletons[id]
-                
-            };
+        alertAppend: function(object, html) {
+            object.append(html);
+            return object;
         },
         // let's create the alert
         alertCreate: function() {
             var self = UserInterface;
-            // name the component
-            var component = "alert";
+
             // build the components
             self.alertBuildComponent();
             // from here the magic begins.
-            if (typeof self.components.skeletons.alert !== "object"){
+            if (typeof self.components.skeletons.alert !== "object") {
                 self.components.skeletons.alert = {};
             }
-            self.components.skeletons.alert[self.components.alert.id] = $("<div/>", {
+
+            var component = $("<div/>", {
                 html: self.components.alert.html,
                 class: self.components.alert.class,
                 id: self.components.alert.id});
+
+            var id = self.components.alert.alertID;
+
+            self.components.skeletons[id] = component;
+
             //if alert.data is an object lets use the key for the data- name and the value for the data value
             if (typeof self.components.alert.data === "object") {
-                self.addData(self.components.skeletons.alert[self.components.alert.id], self.components.alert.data)
+                self.addData(self.components.skeletons[id], self.components.alert.data);
             }
             // add the "X" to close if dismissable is true
             if (self.components.alert.dismissable) {
-                self.components.skeletons.alert[self.components.alert.id].prepend(UI.button({default: false, class: "close", text: "x", data: {dismiss: "alert"}}).object);
+                self.components.skeletons[id].prepend(UI.button({
+                    default: false,
+                    class: "close",
+                    text: "x",
+                    data: {
+                        dismiss: "alert"
+                    }
+                }
+                ).object);
             }
 
             // init the alert, actually the alert can work without this line BUT
             // to user the alert("close") and the data-dismiss = "alert" we need to init the alert 
-            $("#" + self.components.alert.id).alert();
+            self.components.skeletons[id].alert();
 
             // if time is passed let's pass the data to the right method
             if (self.components.alert.time) {
-                self.alertTimeOut(self.components.alert.time);
+                self.alertTimeOut(self.components.skeletons[id], self.components.alert.time);
             }
 
             // fire the callback function is a valid function is passed
             if (typeof self.components.alert.callback === "function") {
-                self.components.alert.callback(self.components.skeletons.alert[self.components.alert.id]);
+                self.components.alert.callback(self.components.skeletons[id]);
             }
             //return the HTML object, the id and the timeOut method
-            return {object: self.components.skeletons.alert[self.components.alert.id],
-                    id: self.components.alert.id,
-                    timeOut: self.alertTimeOut,
-                    append: self.partial(self.alertAppend, self.components.alert.id)
-            };
+            var out = new Array();
+
+            out.push(self.components.skeletons[id]);
+            out.timeOut = self.partial(self.alertTimeOut, self.components.skeletons[id]);
+            out.append = self.partial(self.alertAppend, self.components.skeletons[id])
+
+            return out;
         },
         /*
          * Toast
@@ -757,32 +757,46 @@ var UI = UI || (function($, window, undefined) {
 
             return text;
         },
-        partial : function(func /*, 0..n args */) {
+        partial: function(func /*, 0..n args */) {
             var args = Array.prototype.slice.call(arguments, 1);
-                return function() {
-                    var allArguments = args.concat(Array.prototype.slice.call(arguments));
-                    return func.apply(this, allArguments);
-                };
+            return function() {
+                var allArguments = args.concat(Array.prototype.slice.call(arguments));
+                return func.apply(this, allArguments);
+            };
         },
-        addData:function(object, data){
-                for (var item in data) {
-                    // a simple check to be sure the key exist
-                    if (data.hasOwnProperty(item)) {
-                        object.attr("data-" + data, self.components[component].data[data]);
-                    }
+        addData: function(object, data) {
+            for (var item in data) {
+                // a simple check to be sure the key exist
+                if (data.hasOwnProperty(item)) {
+                    object.attr("data-" + item, data[item]);
                 }
+            }
         },
         log: function() {
             return UserInterface.components;
         },
-        wipeComponents: function() {
+        destroy: function() {
             var self = UserInterface;
 
-            for (var id in self.components.ids) {
-                $("#" + self.components.ids[id]).remove();
+            for (var id in self.components.skeletons) {
+                $(self.components.skeletons[id]).remove();
             }
-            self.component = {};
-            self.components.ids = [];
+            self.component = {
+                skeletons: {}
+            };
+        },
+        extend: function(name, object) {
+            UserInterface.default[name] = $.extend({}, self.default[name], object);
+        },
+        getComponent: function(id) {
+            return UserInterface.components.skeletons[id];
+        },
+        // set the default object, it can be extended by the function extend
+        default: {alert: {
+                html: "",
+                level: "info",
+                dismissable: true
+            }
         }
     };
     return {
@@ -792,7 +806,9 @@ var UI = UI || (function($, window, undefined) {
         alert: UserInterface.alert,
         toast: UserInterface.toast,
         log: UserInterface.log,
-        wipeComponents: UserInterface.wipeComponents
+        destroy: UserInterface.destroy,
+        extend: UserInterface.extend,
+        get: UserInterface.getComponent
     };
 
 })(jQuery, window);

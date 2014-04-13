@@ -245,17 +245,13 @@
                         var self = UIElements;
                         self.config.container.append($("<h2/>", {text:"Alert"}));
                         self.config.container.append($("<p/>", {text:"Two alerts, one dismissable the other one is not"}));
-                        var alert1 = UI.alert({
+                        self.config.container.append(UI.alert({
                             level:"success", 
                             dismissable:true, 
                             html:"<h4>Hello</h4><p>Thank you to visit the MH_UI page",
-                            id:"alert1"
                         }
-                                );
-                        var alert2 = UI.alert("<h4>Awesome</h4><p>I'm one-line of code alert");
-                        
-                        self.config.container.append(alert1.object);
-                        self.config.container.append(alert2.object);
+                                ).append("<br /> This text was append chaining the append method, awesome!"));
+                        self.config.container.append(UI.alert("<h4>Awesome</h4><p>I'm one-line of code alert"));
                     },
                     toasts:function(){
                         var self = UIElements;
