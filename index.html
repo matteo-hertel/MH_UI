@@ -22,6 +22,16 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style>
+        html {
+            /* This prevents the page from shifting when a modal is opened e.g. search */
+            overflow-y: auto;   
+        }
+        .modal,.modal.in,.modal-backdrop.in {
+            /* These are to prevent the blank space for the scroll bar being displayed unless the modal is > page height */
+            overflow-y: auto;
+        }
+        </style>
     </head>
 
     <body>
@@ -200,6 +210,7 @@
                         self.buttons();
                         self.alerts();
                         self.toasts();
+                        self.destroy();
                     },
                     progressbar: function(){
                         var self = UIElements;
@@ -207,7 +218,7 @@
                             UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var div = $("#target_div");<br />var progressbar = UI.progressbar({level:"success",<br /> striped: true,<br /> active:true,<br /> percentage:0<br />});<br /><br />div.append(progressbar.object);<br /><br />div.append(<br />$("&lt;div/&gt;",{id:"progress_bar_slider"}));<br /><br />$("#progress_bar_slider").slider({range:"max",<br />min:0,<br />max:100,<br />value:0,<br />slide:function(event,ui){<br />progressbar.animate({time:5,percentage:ui.value})<br />}});</pre>'})
                         }));
                         self.config.container.append($("<p/>", {text:"An empty progressbar is created, you can adjust the widht with the slider"}));
-                        var progressbar = UI.progressbar({level:"success", striped: true, active:true, percentage:0})
+                        var progressbar = UI.progressbar({striped: true, active:true, percentage:0})
                         self.config.container.append(progressbar);
                         self.config.container.append($("<div/>", {id:"progress_bar_slider"}));
                         
@@ -231,7 +242,7 @@
                                     UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var button1=UI.button({level:"success",<br />size:"lg",<br />text:"Button number 1",<br />actions:{click:function(){<br />$(this).addClass("btn-warning")}<br />},<br />dblclick:function(){<br />}}<br />});</pre>'})
                                  }
                         }})
-                        var button2 = UI.button({level:"danger", text:"Button number 2", actions:{
+                        var button2 = UI.button({level:"danger", text:"Button number 2", class:"pull-right", actions:{
                                 click: function(){button2.changeText({text: "Danger!",id: button2.id})},
                                 dblclick: function(){
                                         UI.modal({title:"<h4>Source Code</h4>", body: '<pre>var button2=UI.button({level:"danger",<br /><br />text:"Button number 2",<br />actions:{<br />click:function(){<br />button2.changeText({text:"Danger!", id: button2.id})<br />},<br />dblclick:function(){<br />}<br />}});</pre>'})
@@ -245,7 +256,7 @@
                         self.config.container.append($("<h2/>", {text:"Alert"}));
                         self.config.container.append($("<p/>", {text:"Two alerts, one dismissable the other one is not"}));
                         self.config.container.append(UI.alert({
-                            level:"success", 
+                            level:"warning", 
                             dismissable:true, 
                             html:"<h4>Hello</h4><p>Thank you to visit the MH_UI page",
                         }
@@ -266,15 +277,46 @@
                             click:function(){
                                 $("body").append(
                                         UI.toast({ 
-                                            level:"warning",
+                                            level:"danger",
                                             position: "bottom-left",
                                             html:"<h4>Hi</h4><p>I'm a toast, I will not disappear until you click on me :D</p>"
                                         }));
                                     }
                                 });
-                                
+                        UI.extend("toast", {level:"success"});
                         toast2.addActions({click:function(){$("body").append(
                                         UI.toast("<h4>Whoa!</h4><p>one-line code toast</p>"))}});
+                        UI.extend("toast", {level:"info"});
+                    },
+                    destroy:function(){
+                        var self = UIElements;
+                        self.config.container.append($("<h2/>", {text:"Destroy"}));
+                        self.config.container.append($("<p/>", {text:"One call to UI.destroy() and every component will be removed"}));
+                        
+                        var confirm_button = UI.button({level:"danger", text:"Remove all the UI component?"});
+                        confirm_button.addActions({click:function(){
+                            confirm_button.changeText("Waiting for confirmation");
+                            var modal = UI.modal({title:"Destroy everything", body:"Are you sure that you want to destroy every UI element? they're awesome", defaultFooter:"false"});
+                            var button_close = UI.button("close").addActions({click:function(){modal.hide();confirm_button.changeText("Remove all the UI component?")}})
+                            var destroy_button = UI.button({level:"danger", text:"Yes, delete everything"}).addActions({click:function(){
+                                var progressbar = UI.progressbar(1);
+                                modal.bodyAppend(progressbar);
+                                progressbar.animate({time:1500, percentage:100, callback:function(){
+                                    
+                                        modal.hide();
+                                        
+                                    setTimeout(function(){
+                                        UI.destroy();
+                                     $("body").append(UI.toast("Successfully removed all the components"));
+                                    }, 1000)
+                                   
+                                }});
+                            }});
+                            modal.footer(button_close);
+                            modal.footer(destroy_button);
+                        }});
+                        
+                        self.config.container.append(confirm_button);
                     }
                 };
 
