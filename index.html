@@ -12,6 +12,7 @@
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link class="styleswitcher" href="css/flat_bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 
         <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -39,8 +40,13 @@
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand">MH_UI</a>
+                    <a class="navbar-brand" href="https://github.com/matteo-hertel/MH_UI">MH_UI on GitHub</a>
                 </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="styleswitcher">Switch Style</a></li>
+            <li><a href="documentation.html" target="_blank">Documentation</a></li>
+            <li><a href="http://matteohertel.com"  target="_blank">About the author</a></li>
+          </ul>
             </div>
         </div>
 
@@ -124,6 +130,7 @@
                         var self = CodeEditor;
                         self.config.writer.on('click', self.toggleWriter);
                         self.config.run.on('click', self.runCode);
+                        self.config.styler.on('click', self.styleSwitcher);
                     },
                     toggleWriter: function(e) {
                         e.preventDefault();
@@ -168,6 +175,33 @@
                         var self = CodeEditor;
                         self.config.result.html("").hide();
                         self.config.error.html("").hide();
+                    },
+                    styleSwitcher:function(){
+                        var self = CodeEditor;
+                        var modal = UI.modal({title: "Style switcher"}); 
+
+                        var content = $("<select/>").on("change", function(){
+                                modal.hide();
+                                $("body").append(UI.toast("Style changed successfully"));
+                                self.changeStyle(this);
+                            }).
+                                    append($("<option/>", {value: "", text: "Select one"})).
+                                    append($("<option/>", {value: "bootstrap", text: "Default Bootstrap"})).
+                                    append($("<option/>", {value: "flat_bootstrap", text: "Flat Bootstrap"})).
+                                    append($("<option/>", {value: "readable_bootstrap", text: "Readable Bootstrap"})).
+                                    append($("<option/>", {value: "cyborg_bootstrap", text: "Cyborg Bootstrap"})).
+                                    append($("<option/>", {value: "cerulean_bootstrap", text: "Cerulean Bootstrap"})).
+                                    append($("<option/>", {value: "amelia_bootstrap", text: "Amelia Bootstrap"})).
+                                    append($("<option/>", {value: "slate_bootstrap", text: "Slate Bootstrap"})).
+                                    append($("<option/>", {value: "yeti_bootstrap", text: "Yeti Bootstrap"}));
+                        modal.bodyAppend(content);
+                    },
+                    changeStyle:function(e){
+                        var value = $(e).val();
+                        if(value){
+                        $(".styleswitcher").remove();
+                        $("head").append($("<link/>",{href:"css/"+value+".min.css",rel:"stylesheet"}));
+                    }
                     }
                 };
 
@@ -177,7 +211,8 @@
                     editor: $('#code_editor'),
                     run: $('#code_run'),
                     result: $('#code_result'),
-                    error: $('#code_error')
+                    error: $('#code_error'),
+                    styler: $("#styleswitcher")
                 });
                 
                 var UIElements = {
@@ -257,7 +292,7 @@
                         self.config.container.append($("<p/>", {text:"Two alerts, one dismissable the other one is not"}));
                         self.config.container.append(UI.alert({
                             level:"warning", 
-                            dismissable:true, 
+                            dismissable:false, 
                             html:"<h4>Hello</h4><p>Thank you to visit the MH_UI page",
                         }
                                 ).append("<br /> This text was append chaining the append method, awesome!"));
@@ -299,14 +334,14 @@
                             var modal = UI.modal({title:"Destroy everything", body:"Are you sure that you want to destroy every UI element? they're awesome", defaultFooter:"false"});
                             var button_close = UI.button("close").addActions({click:function(){modal.hide();confirm_button.changeText("Remove all the UI component?")}})
                             var destroy_button = UI.button({level:"danger", text:"Yes, delete everything"}).addActions({click:function(){
-                                var progressbar = UI.progressbar(1);
+                                var progressbar = UI.progressbar(100);
                                 modal.bodyAppend(progressbar);
-                                progressbar.animate({time:1500, percentage:100, callback:function(){
+                                progressbar.animate({time:100, percentage:100, callback:function(){
                                     
-                                        modal.hide();
+                                    modal.hide();    
                                         
                                     setTimeout(function(){
-                                        UI.destroy();
+                                    UI.destroy();
                                      $("body").append(UI.toast("Successfully removed all the components"));
                                     }, 1000)
                                    
