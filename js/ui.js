@@ -19,8 +19,8 @@ if (typeof jQuery === "function") {
              * bind the event to destroy that modal once is hided
              *
              * Object properties:
-             *     show: boolean, if true is passed the modal will automaticaly displayed, otherwise the .show() method is required to show the modal
-             *     title:  html for the title, if no header is passed a palceholder will be inserted
+             *     show: boolean, if true is passed the modal will automatically displayed, otherwise the .show() method is required to show the modal
+             *     title:  html for the title
              *     id: {optional} an optional id can be passed, if no id is provided a random id will be generated
              *     body: html for the body, if no body is passed a palceholder will be inserted
              *     footer: an object of any type is allowed, but a jquery object for a button with custom callback is highly recomended

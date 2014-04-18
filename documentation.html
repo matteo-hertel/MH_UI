@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,24 +23,24 @@
           <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
         <style>
-        html {
-            /* This prevents the page from shifting when a modal is opened e.g. search */
-            overflow-y: auto;   
-        }
-        .modal,.modal.in,.modal-backdrop.in {
-            /* These are to prevent the blank space for the scroll bar being displayed unless the modal is > page height */
-            overflow-y: auto;
-        }
-        .splash {
-            margin-top:25px;
-            background: linear-gradient(20deg, #080F1F 30%, #2B4B5A 87%, #435E67 100%) repeat fixed 0 0 rgba(0, 0, 0, 0);
-            color: #FFFFFF;
-            padding: 4em 0 2em;
-            text-align: center;
-        }
-        .no-padding {
-            padding:0;
-        }
+            html {
+                /* This prevents the page from shifting when a modal is opened e.g. search */
+                overflow-y: auto;
+            }
+            .modal,.modal.in,.modal-backdrop.in {
+                /* These are to prevent the blank space for the scroll bar being displayed unless the modal is > page height */
+                overflow-y: auto;
+            }
+            .splash {
+                margin-top:25px;
+                background: linear-gradient(20deg, #080F1F 30%, #2B4B5A 87%, #435E67 100%) repeat fixed 0 0 rgba(0, 0, 0, 0);
+                color: #FFFFFF;
+                padding: 4em 0 2em;
+                text-align: center;
+            }
+            .no-padding {
+                padding:0;
+            }
         </style>
     </head>
 
@@ -55,177 +53,238 @@
                 </div>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a id="styleswitcher">Switch Style</a></li>
-            <li><a href="documentation.html" target="_blank">Documentation</a></li>
-            <li><a href="http://matteohertel.com"  target="_blank">About the author</a></li>
-          </ul>
+                    <li><a href="documentation.html" target="_blank">Documentation</a></li>
+                    <li><a href="http://matteohertel.com"  target="_blank">About the author</a></li>
+                </ul>
             </div>
         </div>
-        
+
         <div class="splash">
-      <div class="container">
+            <div class="container">
 
-        <div class="row">
-          <div class="col-lg-12">
-            <h1>Free themes for Bootstrap</h1>
-            <div id="social">
-              <span>
-                <iframe width="53" scrolling="0" height="20" frameborder="0" allowtransparency="true" src="http://ghbtns.com/github-btn.html?user=thomaspark&amp;repo=bootswatch&amp;type=fork" id="gh-fork"></iframe>
-                <iframe width="110" scrolling="0" height="20" frameborder="0" allowtransparency="true" src="http://ghbtns.com/github-btn.html?user=thomaspark&amp;repo=bootswatch&amp;type=watch&amp;count=true" id="gh-star"></iframe>
-              </span>
-              <span>
-                <iframe scrolling="no" frameborder="0" id="twitter-widget-1" allowtransparency="true" src="http://platform.twitter.com/widgets/follow_button.1397165098.html#_=1397725028735&amp;id=twitter-widget-1&amp;lang=en&amp;screen_name=thomashpark&amp;show_count=false&amp;show_screen_name=true&amp;size=m" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="width: 148px; height: 20px;"></iframe>
-                <iframe scrolling="no" frameborder="0" id="twitter-widget-0" allowtransparency="true" src="http://platform.twitter.com/widgets/tweet_button.1397165098.html#_=1397725028732&amp;count=horizontal&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=http%3A%2F%2Fbootswatch.com%2F&amp;size=m&amp;text=Bootswatch%3A%20Free%20themes%20for%20Bootstrap&amp;url=http%3A%2F%2Fbootswatch.com&amp;via=thomashpark" class="twitter-share-button twitter-tweet-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 109px; height: 20px;"></iframe>
-              </span>
-            </div>
-            <div class="alert alert-info">
-              New blog post: <a href="http://news.bootswatch.com/post/81584163618/5-simple-design-tips-to-improve-your-bootstrap-site">5 simple design tips to improve your Bootstrap site</a>
-            </div>
-            <div class="row">
-              <div class="col-md-6 col-md-offset-3">
-                <div style="background-color: rgba(0, 0, 0, 0.4);" class="well sponsor">
-                  <a target="_blank" rel="nofollow" onclick="_gaq.push(['_trackEvent', 'banner', 'click', 'treehouse']);" href="http://srv.buysellads.com/direct/click/track/yes/x/G6NDC27ICWAI627UCWALYK7UCKBILKJMCT7I5">
-                    <span style="float: left; margin-right: 15px;">
-                      <img width="175" height="135" onload="_gaq.push(['_trackEvent', 'banner', 'impression', 'treehouse']);" src="http://srv.buysellads.com/direct/image/track/yes/x/G6NDC27ICWAI627UCWALYK7UCKBILKJMCT7I5" class="bagqzaawlrbwitvdtmmr">
-                    </span>
-                  </a>
-                  <a target="_blank" rel="nofollow" onclick="_gaq.push(['_trackEvent', 'banner', 'click', 'treehouse']);" href="http://srv.buysellads.com/direct/click/track/yes/x/G6NDC27ICWAI627UCWALYK7UCKBILKJMCT7I5">
-                    <h4 style="margin-bottom: 0.4em;">Treehouse</h4>
-                    <div class="clearfix">
-                      <p>Learn Web Design, Coding, Mobile App Development &amp; More.</p>
-                      <p>Start Learning for Free!</p>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>MH_UI Documentation</h1>
+                        <p>For every component will be provided a short description, all the options and some example</p>
+                        </p>If you spot a bug please use the <a href="https://github.com/matteo-hertel/MH_UI/issues" target="_blank">GithHub Issue Tracker</a>,
+                        for info please email me at <span class="text-info">info[at]matteohetel.com</span></p>
+
                     </div>
-                  </a>
                 </div>
-              </div>
-              
-            </div>
-          </div>
-        </div>
 
-      </div>
-    </div>
-<div class="container-fluid">
-    <div class="row well no-padding">
-        <div class="col-md-6 col-md-offset-2" style="background-color:white">
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
             </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="modal">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            <div class="section">
-              <h1 class="page-header" id="transitions">Transitions <small>transition.js</small></h1>
-            
-              <h3>About transitions</h3>
-              <p>For simple transition effects, include <code>transition.js</code> once alongside the other JS files. If you're using the compiled (or minified) <code>bootstrap.js</code>, there is no need to include this&mdash;it's already there.</p>
-              <h3>What's inside</h3>
-              <p>Transition.js is a basic helper for <code>transitionEnd</code> events as well as a CSS transition emulator. It's used by the other plugins to check for CSS transition support and to catch hanging transitions.</p>
-            </div>
-            
-            
         </div>
-        <div class="col-md-4">
-        <h3 class="text-info">Quick access</h3>
-        <div style="width:50%; float:left">
-          <ul class="nav affix nav-pills nav-stacked">
-              <li><a class="doc_item" href="#overview">Overview</a></li>
-              <li><a class="doc_item" href="#modal">Modal</a></li>
-              <li><a class="doc_item" href="#progressbar">Progressbar</a></li>
-              <li><a class="doc_item" href="#button">Button</a></li>
-          </ul>
+        <div class="container-fluid">
+            <div class="row well no-padding">
+                <div class="col-md-6 col-md-offset-2" style="background-color:white">
+                    <div class="section">
+                        <h1 class="page-header" id="modal">Modal <small>UI.modal({options})</small></h1>
+
+                        <h3>About modals</h3>
+                        <p>The modal is a component different from the other components, the default behavior is to be created, appended to the body and be displayed straightaway.</p>
+                        <h3>Usage</h3>
+                        <p>To create a modal use <code>UI.modal({options})</code> no short hand is provided for this component<br > List of options:</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                    <th>Default value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>title</td>
+                                    <td>string/object, html for the title(jQuey .append is used)</td>
+                                    <td>{title : "&lt;h4&gt;Modal Title&lt;/h4&gt;"}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>body</td>
+                                    <td>string/object, html for the body(jQuey .append is used)</td>
+                                    <td>{body : "&lt;p&gt;This is the modal content&lt;/p&gt;"}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>footer</td>
+                                    <td>string/object, html for the footer(jQuey .append is used)</td>
+                                    <td>{footer : UI.button("UI button")}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>defaultFooter</td>
+                                    <td>boolean, if true is passed the default close button will be added to the modal</td>
+                                    <td>{defaultFooter : true}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string, an optional id can be passed, if none is provided a random id will be used</td>
+                                    <td>{id : "my_id"}</td>
+                                    <td>random generated ID</td>
+                                </tr>
+                                <tr>
+                                    <td>show</td>
+                                    <td>boolean, if true is passed the modal will automatically displayed, otherwise the .show() method is required to show the modal</td>
+                                    <td>{show : true}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>callback</td>
+                                    <td>function, a callback function that will be executed once the modal is displayed</td>
+                                    <td>{callback : function(){console.log("Modal created")}}</td>
+                                    <td>None</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Return object</h3>
+                        <p><code>UI.modal({option})</code> return an array object with the following properties and method</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index 0 ([0])</td>
+                                    <td>the HTML of the modal</td>
+                                    <td>it can be appended like a common jQuery object</td>
+                                </tr>
+                                <tr>
+                                    <td>title</td>
+                                    <td>any HTML passed to this function will replace the title of the modal</td>
+                                    <td>UI.modal({title:"&lt;h4&gt;Modal Title&lt;/h4&gt;"}).title("&lt;h4&gt;New Title&lt;/h4&gt;")</td>
+                                </tr>
+                                <tr>
+                                    <td>titleAppend</td>
+                                    <td>any HTML passed to this function will be appended to the title of the modal</td>
+                                    <td>UI.modal({title:"&lt;h4&gt;Modal Title&lt;/h4&gt;"}).titleAppend("&lt;small&gt;Subtitle&lt;/small&gt;")</td>
+                                </tr>
+                                <tr>
+                                    <td>body</td>
+                                    <td>any HTML passed to this function will replace the body of the modal</td>
+                                    <td>UI.modal({body:"&lt;p&gt;Modal content&lt;/p&gt;"}).body("&lt;p&gt;New content&lt;/p&gt;")</td>
+                                </tr>
+                                <tr>
+                                    <td>bodyAppend</td>
+                                    <td>any HTML passed to this function will be appended to the body of the modal</td>
+                                    <td>UI.modal({body:"&lt;p&gt;Modal Content&lt;/p&gt;"}).bodyAppend("&lt;p&gt;new paragraph &lt;/p&gt;")</td>
+                                </tr>
+                                <tr>
+                                    <td>footer</td>
+                                    <td>any HTML passed to this function will be appended to the footer of the modal</td>
+                                    <td>UI.modal({footer:"&lt;p&gt;Footer content&lt;/p&gt;"}).footer(UI.button("button"))</td>
+                                </tr>
+                                <tr>
+                                    <td>show</td>
+                                    <td>no parameters are required, if the function is called the modal is showed</td>
+                                    <td>UI.modal({show:false}).show()</td>
+                                </tr>
+                                <tr>
+                                    <td>hide</td>
+                                    <td>no parameters are required, if the function is called the modal is hided and destroyed</td>
+                                    <td>UI.modal({show:true}).hide()</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Working Example</h3>
+                        <p><textarea rows="10" cols="35">
+var modal = UI.modal({
+title: "&lt;h4&gt;Modal Title&lt;/h4&gt;",
+body: "&lt;p&gt;This is the modal content&lt;/p&gt;",
+footer: UI.button("UI button"), defaultFooter: true,
+id: "my_id",
+show: true,
+callback: function() {
+console.log("Modal created")
+}
+});
+
+modal.titleAppend("&lt;small&gt;Subtitle&lt;/small&gt;");
+modal.bodyAppend(
+UI.button("Change Body").addActions({
+click: function() {
+var content = prompt("New value for the body(NOTE: all the body will change)");
+if (prompt) {
+modal.body(content);
+}
+}
+})
+)
+modal.bodyAppend(
+UI.button("Change Title").addActions({
+click: function() {
+var content = prompt("New value for the title(NOTE: all the title will change)");
+if (prompt) {
+modal.title(content);
+}
+}
+})
+)
+                            </textarea>
+                        <div class="hide UI_render">UI.button({id:"modal_render", text:"Run the code", level:"success"})</div>
+                        </p>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-info">Quick access</h3>
+                    <div style="width:50%; float:left">
+                        <ul class="nav affix nav-pills nav-stacked">
+                            <li><a class="doc_item" href="#overview">Overview</a></li>
+                            <li><a class="doc_item" href="#modal">Modal</a></li>
+                            <li><a class="doc_item" href="#progressbar">Progressbar</a></li>
+                            <li><a class="doc_item" href="#button">Button</a></li>
+                        </ul>
+                    </div>
+                    <div style="width:50%; float:right">
+                        <ul class="nav affix nav-pills nav-stacked">
+                            <li><a class="doc_item" href="#overview">Alert</a></li>
+                            <li><a class="doc_item" href="#modal">Toast</a></li>
+                            <li><a class="doc_item" href="#extra">Extra</a></li>
+                            <li><a class="doc_item" href="#tips">Tips and Tricks</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
         </div>
-        <div style="width:50%; float:right">
-            <ul class="nav affix nav-pills nav-stacked">
-              <li><a class="doc_item" href="#overview">Alert</a></li>
-              <li><a class="doc_item" href="#modal">Toast</a></li>
-              <li><a class="doc_item" href="#extra">Extra</a></li>
-              <li><a class="doc_item" href="#tips">Tips and Tricks</a></li>
-          </ul>
-        </div>
-        
-        </div>
-    </div>
-</div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-        
+
         <script src="js/bootstrap.min.js"></script>
         <script src="js/ui.js"></script>
-<script type="text/javascript">
+        <script type="text/javascript">
 
-    $(".doc_item").on("click", function(e){
-        e.preventDefault();
-        $('html, body').animate({
-            scrollTop: $($(e.target).attr("href")).offset().top + 'px'
-        }, 'medium');
+            $(document).ready(function() {
+                $(".UI_render").each(function(k, v) {
+                    var html = $(v).html();
+                    $(v).removeClass("hide").html(eval(html));
+                });
+            });
 
-        
-    })
-    
-    function scrollIntoView(eleID) {
-   var e = document.getElementById(eleID);
-   if (!!e && e.scrollIntoView) {
-       e.scrollIntoView();
-   }
-}
-</script>
-</body>
+            $(".doc_item").on("click", function(e) {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: $($(e.target).attr("href")).offset().top + 'px'
+                }, 'medium');
+
+
+            })
+
+            function scrollIntoView(eleID) {
+                var e = document.getElementById(eleID);
+                if (!!e && e.scrollIntoView) {
+                    e.scrollIntoView();
+                }
+            }
+        </script>
+    </body>
 </html>
 
