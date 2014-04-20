@@ -212,6 +212,12 @@
                                     <td>no parameters are required, if the function is called the modal is hided and destroyed</td>
                                     <td>UI.modal({show:true}).hide()</td>
                                 </tr>
+                                <tr>
+                                    <td>data</td>
+                                    <td>object, an object with the the name as key and as value the value for the data- element</td>
+                                    <td>{data : {hello: "world", foo: "bar"}}</td>
+                                    <td>None</td>
+                                </tr>
                             </tbody>
                         </table>
 
@@ -219,7 +225,7 @@
                         <textarea id="modal_code" rows="10" style="width:100%">
 var modal = UI.modal({
     title: "<h2>Modal Title</h2>",
-    body: "<p>This is the modal content</p>",
+    body: ["Waiting for new content", UI.progressbar(100)[0]],
     defaultFooter: true,
     id: "my_id",
     show: true,
@@ -263,6 +269,473 @@ modal.footer(
                         <div class="hide UI_render">UI.button({id:"modal_render", text:"Run the code", level:"success"})</div>
 
                     </div>
+                    <div class="section">
+                        <h1 class="page-header" id="progressbar">Progressbar <small>UI.progressbar({options})</small></h1>
+
+                        <h3>About progressbar</h3>
+                        <p>Progressbars can be used to give a visual feedback of a pending opration or to a placeholder for a content not already loaded.<br />
+                        <h3>Usage</h3>
+                        <p>To create a progressbar use <code>UI.progressbar({options})</code> for this component the short hand <code>UI.progressbar(integer)</code> is provided, the passed integer will
+                            be the percentage of the progressbar, the default values are used to create the progressbar, check the <a class="doc_item" href="#extra">Extra</a> section to learn more about the default values<br > List of options:</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                    <th>Default value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>level</td>
+                                    <td>string, the Twitter's Bootstrap level code(success, info, danger, warning)</td>
+                                    <td>{level : "success"}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>percentage</td>
+                                    <td>integer, the percentage of the width of the progressbar</td>
+                                    <td>{percentage : 100}</td>
+                                    <td>100</td>
+                                </tr>
+                                <tr>
+                                    <td>striped</td>
+                                    <td>boolean, if true is passed the progressbar will be striped</td>
+                                    <td>{striped :true}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>active</td>
+                                    <td>boolean, if true is passed the class active will be added to the progressbar</td>
+                                    <td>{active : true}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string, an optional id can be passed, if none is provided a random id will be used</td>
+                                    <td>{id : "my_id"}</td>
+                                    <td>random generated ID</td>
+                                </tr>
+                                <tr>
+                                    <td>class</td>
+                                    <td>string, the passed class will be added to the component</td>
+                                    <td>{class : "my_class"}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>data</td>
+                                    <td>object, an object with the the name as key and as value the value for the data- element</td>
+                                    <td>{data : {hello: "world", foo: "bar"}}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>callback</td>
+                                    <td>function, a callback function that will be executed once the modal is displayed</td>
+                                    <td>{callback : function(){console.log("Modal created")}}</td>
+                                    <td>None</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Return object</h3>
+                        <p><code>UI.progressbar({option})</code> or <code>UI.progressbar(integer)</code> return an array object with the following properties and method</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index 0 ([0])</td>
+                                    <td>the HTML of the progressbar</td>
+                                    <td>it can be appended like a common jQuery object</td>
+                                </tr>
+                                <tr>
+                                    <td>animate</td>
+                                    <td>this function will animate the progressbar to the given percentage</td>
+                                    <td>UI.modal(0).animate(integer/object)</td>
+                                </tr>
+                                <tr>
+                                    <td>animate</td>
+                                    <td>the animte function accepts an integer or a object, the integer represent the millisecond to
+                                        animate the width to 100%</td>
+                                    <td>UI.modal(0).animate(500)</td>
+                                </tr>
+                                <tr>
+                                    <td>animate</td>
+                                    <td>the animte function accepts an integer or a object, the object can contain:
+                                        time: millisecond, percentage: widht in percentage, callback: function</td>
+                                    <td>UI.modal(0).animate({time: 500, percentage: 50, callback:function(){console.log("callback fired")}})</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Working Example</h3>
+                        <textarea id="progressbar_code" rows="10" style="width:100%">
+var progressbar = UI.progressbar({
+level: "success",
+active: true,
+striped: true,
+id : "progressbar_id",
+class: "progressbar_class",
+percentage:20
+})
+$("#progressbar_result").append(progressbar);
+progressbar.animate({time: 800, percentage: 100, callback:function(){console.log("callback fired")}})
+                        </textarea>
+                        <div id="progressbar_result"></div>
+                        <div class="hide UI_render">UI.button({id:"progressbar_render", text:"Run the code", level:"success"})</div>
+
+                    </div>
+                    <div class="section">
+                        <h1 class="page-header" id="button">Button <small>UI.button({options})</small></h1>
+
+                        <h3>About button</h3>
+                        <p>Buttons are basic component to intercat with the user.</p>
+                        <h3>Usage</h3>
+                        <p>To create a button use <code>UI.button({options})</code> for this component the short hand <code>UI.button(string)</code> is provided, the passed string will
+                            be the text of the button, the default values are used to create the button, check the <a class="doc_item" href="#extra">Extra</a> section to learn more about the default values<br > List of options:</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                    <th>Default value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>level</td>
+                                    <td>string, the Twitter's Bootstrap level code(success, info, danger, warning, link)</td>
+                                    <td>{level : "success"}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>text</td>
+                                    <td>string, the text of the button</td>
+                                    <td>{text : "Hello, World!"}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>disabled</td>
+                                    <td>boolean, if true is passed the button will be disabled</td>
+                                    <td>{disabled :true}</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>default</td>
+                                    <td>boolean, if the value is false the default btn and btn- classes will not be added to the button</td>
+                                    <td>{default : false}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>size</td>
+                                    <td>string, Twitter's Bootstrap button size (xs, sm, lg)</td>
+                                    <td>{size : "lg"}</td>
+                                    <td>None(normal size)</td>
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string, an optional id can be passed, if none is provided a random id will be used</td>
+                                    <td>{id : "my_id"}</td>
+                                    <td>random generated ID</td>
+                                </tr>
+                                <tr>
+                                    <td>class</td>
+                                    <td>string, the passed class will be added to the component</td>
+                                    <td>{class : "my_class"}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>data</td>
+                                    <td>object, an object with the the name as key and as value the value for the data- element</td>
+                                    <td>{data : {hello: "world", foo: "bar"}}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>actions</td>
+                                    <td>object, an object with the the action as key and as value the function that will be fired at that event</td>
+                                    <td>{actions : {click: function(){console.log("click")}, mouseleave:function(){$(this).addClass("disabled")}}}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>callback</td>
+                                    <td>function, a callback function that will be executed once the modal is displayed</td>
+                                    <td>{callback : function(){console.log("Modal created")}}</td>
+                                    <td>None</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Return object</h3>
+                        <p><code>UI.button({option})</code> or <code>UI.button(string)</code> return an array object with the following properties and method</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index 0 ([0])</td>
+                                    <td>the HTML of the progressbar</td>
+                                    <td>it can be appended like a common jQuery object</td>
+                                </tr>
+                                <tr>
+                                    <td>changeText</td>
+                                    <td>any HTML passed to this function will replace the text of the button</td>
+                                    <td>UI.button("Text").changeText("newText")</td>
+                                </tr>
+                                <tr>
+                                    <td>addActions</td>
+                                    <td>this function accept  an object with the the action as key and as value the function that will be fired at that event</td>
+                                    <td>UI.button("click me").addActions({click: function(){alert("hello")}})</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Working Example</h3>
+                        <textarea id="button_code" rows="10" style="width:100%">
+var button = UI.button({
+level: "info",
+id : "button_id",
+class: "button_class",
+size: "lg",
+text:"click me",
+actions: {click:function(){button[0].addClass("btn-danger")}}
+})
+button.addActions({dblclick:function(){var text = prompt("new text"); if(text){button.changeText(text)}}})
+
+$("#button_result").append(button);
+                        </textarea>
+                        <div class="hide UI_render">UI.button({id:"button_render", text:"Run the code", level:"success"})</div>
+                        <div id="button_result"></div>
+
+                    </div>
+                    <div class="section">
+                        <h1 class="page-header" id="alert">Alert <small>UI.alert({options})</small></h1>
+
+                        <h3>About alert</h3>
+                        <p>An alert is a banner that inform the user that something happened</p>
+                        <h3>Usage</h3>
+                        <p>To create an alert use <code>UI.alert({options})</code> for this component the short hand <code>UI.alert(string)</code> is provided, the passed string will
+                            be the HTML of the alert, the default values are used to create the alert, check the <a class="doc_item" href="#extra">Extra</a> section to learn more about the default values<br > List of options:</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                    <th>Default value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>level</td>
+                                    <td>string, the Twitter's Bootstrap level code(success, info, danger, warning)</td>
+                                    <td>{level : "success"}</td>
+                                    <td>info</td>
+                                </tr>
+                                <tr>
+                                    <td>HTML</td>
+                                    <td>string, the html of the alert</td>
+                                    <td>{html : "&lt;h4&gt;Hello, World!&lt;/h4&gt;"}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>dismissable</td>
+                                    <td>boolean, if true is passed the "x" button to close the alert will be added</td>
+                                    <td>{dismissable :true}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string, an optional id can be passed, if none is provided a random id will be used</td>
+                                    <td>{id : "my_id"}</td>
+                                    <td>random generated ID</td>
+                                </tr>
+                                <tr>
+                                    <td>class</td>
+                                    <td>string, the passed class will be added to the component</td>
+                                    <td>{class : "my_class"}</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>data</td>
+                                    <td>object, an object with the the name as key and as value the value for the data- element</td>
+                                    <td>{data : {hello: "world", foo: "bar"}}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>time</td>
+                                    <td>integer/object, if time is integer that value will be used to make the alert disappear after {time} seconds, in and object is passed
+                                        it can contain: time: millisecond after the alert will be destroyed, effect: the jQuery effect like slideUp, FadeOut, effectTime: how long the effect will be performed</td>
+                                    <td>{time : {time: 1000, effect: "slideUp", efectTime: 500}}</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>callback</td>
+                                    <td>function, a callback function that will be executed once the modal is displayed</td>
+                                    <td>{callback : function(){console.log("Modal created")}}</td>
+                                    <td>None</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Return object</h3>
+                        <p><code>UI.alert({option})</code> or <code>UI.alert(string)</code> return an array object with the following properties and method</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index 0 ([0])</td>
+                                    <td>the HTML of the progressbar</td>
+                                    <td>it can be appended like a common jQuery object</td>
+                                </tr>
+                                <tr>
+                                    <td>timeOut</td>
+                                    <td>integer/object can be passed, if time is integer that value will be used to make the alert disappear after {time} seconds, in and object is passed
+                                        it can contain: time: millisecond after the alert will be destroyed, effect: the jQuery effect like slideUp, FadeOut, effectTime: how long the effect will be performed</td>
+                                    <td>UI.alert("Text").timeOut({time: 1000, effect: "slideUp", efectTime: 500})</td>
+                                </tr>
+                                <tr>
+                                    <td>append</td>
+                                    <td>any HTML passed to this function will be added to the alert</td>
+                                    <td>UI.alert("&lt;h4&gt;Hello, World!&lt;/h4&gt;").append("&lt;p&gt;I was added by the append functiony!&lt;/p&gt;")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Working Example</h3>
+                        <textarea id="alert_code" rows="10" style="width:100%">
+var alert = UI.alert({
+level: "info",
+id : "alert_id",
+class: "alert_class",
+dismissable: true,
+html:"<h4>Title</h4><p>Content</p>"
+})
+alert.append("<p>appended text</p>");
+alert.timeOut({time: 5000, effect:"slideUp", timeEffect: 800})
+
+$("#alert_result").append(alert);
+                        </textarea>
+                        <div class="hide UI_render">UI.button({id:"alert_render", text:"Run the code", level:"success"})</div>
+                        <div id="alert_result"></div>
+
+                    </div>
+                    <div class="section">
+                        <h1 class="page-header" id="toast">Alert <small>UI.toast({options})</small></h1>
+
+                        <h3>About toast</h3>
+                        <p> A toast according to microsoft is :"A transient message to the user that contains relevant, time-sensitive
+                            information and provides quick access to related content in an app."</p>
+                        <h3>Usage</h3>
+                        <p>A toast is nothing more than an alert floating on the screen so all the options of an <a class="doc_item" href="#alert">alert</a> can be passed to <code>UI.toast({options})</code> for this component the short hand <code>UI.toast(string)</code> is provided, the passed string will
+                            be the HTML of the toast, the default values are used to create the alert, check the <a class="doc_item" href="#extra">Extra</a> section to learn more about the default values<br > List of options:</p>
+                        <p>toast accepts another options</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                    <th>Default value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>position</td>
+                                    <td>string/object, the position of the toast, there are 4 predefined position:
+                                        top-left, top-right, bottom-left, bottom-right, if you want to
+                                        create the toast in a different location you can pass on object
+                                        with the css properties like right, top etc, every element will be
+                                        passed to the jQuery .css()</td>
+                                    <td>{position : "bottom-left"}</td>
+                                    <td>top-right</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Return object</h3>
+                        <p><code>UI.toast({option})</code> or <code>UI.alert(string)</code> return an array object the same as UI.alert(), please see <a class="doc_item" href="#alert">Alert</a> documentation for more info</p>
+
+                        <h3>Working Example</h3>
+                        <textarea id="toast_code" rows="10" style="width:100%">
+var toast = UI.toast({
+level: "info",
+id : "toast_id",
+class: "toast_class",
+dismissable: true,
+html:"<h4>Title</h4><p>Content</p>",
+position:"top-right"
+})
+toast.append("<p>appended text</p>");
+toast.timeOut({time: 5000, effect:"slideUp", timeEffect: 800})
+
+$("body").append(toast);
+                        </textarea>
+                        <div class="hide UI_render">UI.button({id:"toast_render", text:"Run the code", level:"success"})</div>
+
+                    </div>
+                    <div class="section">
+                        <h1 class="page-header" id="extra">Extra</h1>
+
+                        <h3>Extend</h3>
+                        <p>The default value for every component can be changed using the extend method</p>
+                        <h3>Usage</h3>
+                        <p><code>UI.extend("name", {options})</code></p>
+                        <p>For example the toast as the default position to top-right on the screen and info as level, the developer can change that default value<br />
+                            by using <code>UI.extend("toast", {level:"success", position:"bottom-left"})</code></p>
+                        <h3>Working Example</h3>
+                        <textarea id="extra_code" rows="3" style="width:100%">
+UI.extend("toast", {level:"success", position:"bottom-left"})
+$("body").append(UI.toast("The default value are changed!"));
+                        </textarea>
+                        <div class="hide UI_render">UI.button({id:"extra_render", text:"Run the code", level:"success"})</div>
+
+                        <h3>Destroy</h3>
+                        <p>Destroy all the coponent create via the UI</p>
+                        <h3>Usage</h3>
+                        <p><code>UI.destroy()</code></p>
+                        <h3>Working Example</h3>
+                        <textarea id="extra2_code" rows="8" style="width:100%">
+var button = UI.button("Hello");
+var progressbar = UI.progressbar(100);
+var alert = UI.alert("I'm an awesome alert, please do not destroy me!");
+$("#extra_result").append([button[0], alert[0], progressbar[0]]);
+
+setTimeout(UI.destroy, 6500);
+$("body").append(UI.toast("All the components are about to be destroyed :("));
+
+                        </textarea>
+                        <div class="hide UI_render">UI.button({id:"extra2_render", text:"Run the code", level:"success"})</div>
+                        <div id="extra_result"></div>
+
+                    </div>
+                    <div class="section">
+                        <h1 class="page-header" id="tips">Tips & Tricks</h1>
+
+                        <p>
+                            Since the library was just released no tips or tricks are available at the moment.
+                        </p>
+
+                        <h3>Do you have a tip or trick you want to share?</h3>
+                        <p>Please send me and email at <span class="text-info">info[at]matteohetel.com</span>!</p>
+                    </div>
 
                 </div>
                 <div class="col-md-4">
@@ -277,8 +750,8 @@ modal.footer(
                     </div>
                     <div style="width:50%; float:right">
                         <ul class="nav affix nav-pills nav-stacked">
-                            <li><a class="doc_item" href="#overview">Alert</a></li>
-                            <li><a class="doc_item" href="#modal">Toast</a></li>
+                            <li><a class="doc_item" href="#alert">Alert</a></li>
+                            <li><a class="doc_item" href="#toast">Toast</a></li>
                             <li><a class="doc_item" href="#extra">Extra</a></li>
                             <li><a class="doc_item" href="#tips">Tips and Tricks</a></li>
                         </ul>
@@ -292,81 +765,7 @@ modal.footer(
 
         <script src="js/bootstrap.min.js"></script>
         <script src="js/ui.js"></script>
-        <script type="text/javascript">
-
-
-            (function($) {
-                var Codex = {
-                    fire: function(config) {
-                        this.config = config;
-                        this.renderUI();
-                        setTimeout(this.bindEvents, 1500);
-
-                    },
-                    bindEvents: function() {
-                        var self = Codex;
-                        console.log(self.config);
-                        self.config.item.on("click", self.scrollIntoView);
-                        self.config.modal_render.on("click", self.modalRender);
-                        self.config.styler.on('click', self.styleSwitcher);
-                    },
-                    renderUI: function() {
-                        Codex.config.render.each(function(k, v) {
-                            var html = $(v).html();
-                            $(v).removeClass("hide").html(eval(html));
-                        });
-
-                        Codex.config.modal_render = $("#modal_render");
-                    },
-                    styleSwitcher: function() {
-                        var self = Codex;
-                        var modal = UI.modal({title: "Style switcher"});
-
-                        var content = $("<select/>").on("change", function() {
-                            modal.hide();
-                            $("body").append(UI.toast("Style changed successfully"));
-                            self.changeStyle(this);
-                        }).
-                                append($("<option/>", {value: "", text: "Select one"})).
-                                append($("<option/>", {value: "bootstrap", text: "Default Bootstrap"})).
-                                append($("<option/>", {value: "flat_bootstrap", text: "Flat Bootstrap"})).
-                                append($("<option/>", {value: "readable_bootstrap", text: "Readable Bootstrap"})).
-                                append($("<option/>", {value: "cyborg_bootstrap", text: "Cyborg Bootstrap"})).
-                                append($("<option/>", {value: "cerulean_bootstrap", text: "Cerulean Bootstrap"})).
-                                append($("<option/>", {value: "amelia_bootstrap", text: "Amelia Bootstrap"})).
-                                append($("<option/>", {value: "slate_bootstrap", text: "Slate Bootstrap"})).
-                                append($("<option/>", {value: "yeti_bootstrap", text: "Yeti Bootstrap"}));
-                        modal.bodyAppend(content);
-                    },
-                    changeStyle: function(e) {
-                        var value = $(e).val();
-                        if (value) {
-                            $(".styleswitcher").remove();
-                            $("head").append($("<link/>", {href: "css/" + value + ".min.css", rel: "stylesheet"}));
-                        }
-                    },
-                    scrollIntoView: function(e) {
-                        e.preventDefault();
-                        $('html, body').animate({
-                            scrollTop: $($(e.target).attr("href")).offset().top + 'px'
-                        }, 'medium');
-
-
-                    },
-                    modalRender: function() {
-                        eval($("#modal_code").val());
-                    }
-                };
-
-                Codex.fire({
-                    item: $(".doc_item"),
-                    render: $(".UI_render"),
-                    styler: $("#styleswitcher")
-                });
-
-
-            }(jQuery));
-        </script>
+        <script src="js/codex.min"></script>
     </body>
 </html>
 

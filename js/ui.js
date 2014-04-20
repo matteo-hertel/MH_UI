@@ -23,6 +23,7 @@ if (typeof jQuery === "function") {
              *     title:  html for the title
              *     id: {optional} an optional id can be passed, if no id is provided a random id will be generated
              *     body: html for the body, if no body is passed a palceholder will be inserted
+             *     data: {optional} object with key the name of the data and as value the value of the data element
              *     footer: an object of any type is allowed, but a jquery object for a button with custom callback is highly recomended
              *     defaultFooter: boolean, if true is passed the default close button is added to the modal
              *     callback: {optional} a callback function that will be executed once the modal is displayed
@@ -192,6 +193,7 @@ if (typeof jQuery === "function") {
              *     id: {optional} a custom id for the container of the progressbar, if no id is provided a random one will be assigned
              *     level:  Twitter Bootstrap message level: success, info, danger, warning
              *     percentage:  an integer from 0 to 100, default 0
+             *     data: {optional} object with key the name of the data and as value the value of the data element
              *     striped:  {optional} boolean to make the progressbar striepd
              *     active:  {optional} boolean to make the progressbar active
              *     callback: {optional} a callback function that will be executed once the bar is created, to this function will be passed an object with a reference to the bar and the aniamte function
@@ -208,13 +210,8 @@ if (typeof jQuery === "function") {
                 }
                 // if an interger is passed the user want a default progressbar
                 else if (typeof data === "number") {
-                    // empty object to be populated
-                    self.components.progressbar = {};
-                    // some nice active and striped effect
-                    self.components.progressbar.striped = true;
-                    self.components.progressbar.active = true;
-                    // set the percentage
-                    self.components.progressbar.percentage = parseInt(data);
+                    // extend the default progressbar object
+                    self.components.progressbar = $.extend({}, self.default.progressbar, {percentage: parseInt(data)})
                     // return the progressbar
                     return self.progressbarCreate();
                 }
@@ -339,6 +336,7 @@ if (typeof jQuery === "function") {
              *     class: {optional} a custom class for the button
              *     disabled: {optional} if true is passed the button will be disabled
              *     size: {optional} Twitter Bootstrap size: lg, sm, xs
+             *     data: {optional} object with key the name of the data and as value the value of the data element
              *     id: {optional} a custom id for the button if no id is provided a random one will be assigned
              *     default: {optional} if the value is false the default btn and btn- classes will not be added to the button
              *     actions: {optional} an object with key the event you want to bind (click, mouseenter, customEvent, NOTE: do not quote the event), and the relative function 
@@ -394,6 +392,8 @@ if (typeof jQuery === "function") {
                 }
                 //change the text
                 object.text(data.text);
+
+                return object;
 
             },
             // you forgot to bind some event to the button didn't you, this function will help you
@@ -631,7 +631,7 @@ if (typeof jQuery === "function") {
              *     position: the position of the toast, there are 4 predefined position:
              *          top-left, top-right, bottom-left, bottom-right, if you want to 
              *          create the toast in a different location you can pass on object
-             *          with the css properties like right, top etc, avery element will be 
+             *          with the css properties like right, top etc, every element will be 
              *          passed to the jQuery .css()
              *     append: {optional} if you want to add a jQuery object to the toast, 
              *              just create an object with any number of element the value of every key-value pair
@@ -807,11 +807,13 @@ if (typeof jQuery === "function") {
             extend: function(name, object) {
                 UserInterface.default[name] = $.extend({}, UserInterface.default[name], object);
             },
-            getComponent: function(id) {
-                return UserInterface.components.skeletons[id];
-            },
             // set the default object, it can be extended by the function extend
             default: {
+                progressbar: {
+                    striped: true,
+                    active: true,
+                    percentage: 100
+                },
                 alert: {
                     html: "",
                     level: "info",
@@ -834,10 +836,8 @@ if (typeof jQuery === "function") {
             button: UserInterface.button,
             alert: UserInterface.alert,
             toast: UserInterface.toast,
-            log: UserInterface.log,
             destroy: UserInterface.destroy,
             extend: UserInterface.extend,
-            get: UserInterface.getComponent
         };
 
     })(jQuery, window);
