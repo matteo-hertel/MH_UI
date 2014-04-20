@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="http://matteohertel.com/wp-content/uploads/favicon.png">
+
+        <title>MH_UI Demo</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link class="styleswitcher" href="css/flat_bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+
+        <!-- Just for debugging purposes. Don't actually copy this line! -->
+        <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style>
+            html {
+                /* This prevents the page from shifting when a modal is opened e.g. search */
+                overflow-y: auto;
+            }
+            .modal,.modal.in,.modal-backdrop.in {
+                /* These are to prevent the blank space for the scroll bar being displayed unless the modal is > page height */
+                overflow-y: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://github.com/matteo-hertel/MH_UI">MH_UI on GitHub</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="styleswitcher">Switch Style</a></li>
+                    <li><a href="documentation.html" target="_blank">Documentation</a></li>
+                    <li><a href="http://matteohertel.com"  target="_blank">About the author</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron" style="background-color: white">
+            <div class="container">
+                <h1>Welcome to MH_UI!</h1>
+                <p>This is a demo page for the JavaScript wrapper MH_UI, a JS library that made the creation of UI element from Twitter Boostrap easy as pie. Try it yourself!</p>
+                <p><a id="launch" class="btn btn-primary btn-lg" role="button">Lauch UI Elements</a></p>
+            </div>
+        </div>
+        <div class="jumbotron" id="components" style="display:none">
+            <div class="container">
+                <h1>Components</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Example row of columns -->
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>Modular</h2>
+                    <p>Mh_UI is designed to be as modular as possible, while the dependencies are available you just need to include the MH_UI.js to use it in the way you want, you can
+                        just create a single element or create any number of element that interact to each other.</p>
+                </div>
+                <div class="col-md-4">
+                    <h2>Highly configurable</h2>
+                    <p>Every components of MH_UI is highly configurable to meet your need but if you want to leave the default options you can create every UI element with very low amount of code</p>
+                </div>
+                <div class="col-md-4">
+                    <h2>Try it</h2>
+                    <p>In this demo page you can test all the components, you can launch a demo by clicking the button "Lauch UI Elements" or clicking the following button and write your own code</p>
+                    <p><a id="code_writer" class="btn btn-default" href="#" role="button">Write your code</a></p>
+                </div>
+            </div>
+
+            <div id="code_wrapper" style="display:none" class="row">
+
+                <div class="col-lg-12">
+                    <h4>Your Code</h4>
+                    <textarea style="display:none" id="code_editor" class="form-control " cols="6" placeholder="Insert your code"></textarea>
+                    <!--                    <div style="display:none" id="code_editor" class="form-control"></div>-->
+                    <p><a style="display:none" id="code_run" class="btn btn-success pull-right " role="button">Run Code</a></p>
+                    <div style="display:none" id="code_error" class="text-danger ">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <h4>Result</h4>
+                    <div id="code_result" class="well" style="display:none">
+
+                    </div>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <footer>
+                <p>&copy; Matteo Hertel 2014</p>
+            </footer>
+        </div> <!-- /container -->
+
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/ui.js"></script>
+        <script src="js/codeEditor.min.js"></script>
+
+    </body>
+</html>
