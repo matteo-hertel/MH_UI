@@ -73,9 +73,7 @@
                     append($("<option/>", {value: "bootstrap", text: "Default Bootstrap"})).
                     append($("<option/>", {value: "flat_bootstrap", text: "Flat Bootstrap"})).
                     append($("<option/>", {value: "readable_bootstrap", text: "Readable Bootstrap"})).
-                    append($("<option/>", {value: "cyborg_bootstrap", text: "Cyborg Bootstrap"})).
                     append($("<option/>", {value: "cerulean_bootstrap", text: "Cerulean Bootstrap"})).
-                    append($("<option/>", {value: "amelia_bootstrap", text: "Amelia Bootstrap"})).
                     append($("<option/>", {value: "slate_bootstrap", text: "Slate Bootstrap"})).
                     append($("<option/>", {value: "yeti_bootstrap", text: "Yeti Bootstrap"}));
             modal.bodyAppend(content);

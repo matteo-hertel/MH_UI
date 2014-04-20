@@ -211,7 +211,7 @@ if (typeof jQuery === "function") {
                 // if an interger is passed the user want a default progressbar
                 else if (typeof data === "number") {
                     // extend the default progressbar object
-                    self.components.progressbar = $.extend({}, self.default.progressbar, {percentage: parseInt(data)})
+                    self.components.progressbar = $.extend({}, self.default.progressbar, {percentage: parseInt(data)});
                     // return the progressbar
                     return self.progressbarCreate();
                 }
@@ -269,7 +269,7 @@ if (typeof jQuery === "function") {
                         data.callback();
                     }
                 });
-                return object
+                return object;
             },
             // the core function that will create the progressbar
             progressbarCreate: function() {
@@ -354,7 +354,7 @@ if (typeof jQuery === "function") {
                 }
                 // if a string is passed the user want a default button
                 else if (typeof data === "string") {
-                    self.components.button = $.extend({}, self.default.button, {text: data})
+                    self.components.button = $.extend({}, self.default.button, {text: data});
                     // return the button
                     return self.buttonCreate();
                 }
@@ -487,7 +487,7 @@ if (typeof jQuery === "function") {
 
                 else if (typeof data === "string") {
 
-                    self.components.alert = $.extend({}, self.default.alert, {html: data})
+                    self.components.alert = $.extend({}, self.default.alert, {html: data});
                     return self.alertCreate();
                 }
             },
@@ -607,7 +607,7 @@ if (typeof jQuery === "function") {
                 // parameter is predefined, in this case the HTML is passed so the function will
                 // alway affect the right node
                 out.timeOut = self.partial(self.alertTimeOut, self.components.skeletons[id]);
-                out.append = self.partial(self.alertAppend, self.components.skeletons[id])
+                out.append = self.partial(self.alertAppend, self.components.skeletons[id]);
 
                 return out;
             },
@@ -660,7 +660,7 @@ if (typeof jQuery === "function") {
 
                 else if (typeof data === "string") {
 
-                    self.components.toast = $.extend({}, self.default.toast, {html: data})
+                    self.components.toast = $.extend({}, self.default.toast, {html: data});
                     //create the toast
                     return self.toastCreate();
                 }
@@ -837,7 +837,7 @@ if (typeof jQuery === "function") {
             alert: UserInterface.alert,
             toast: UserInterface.toast,
             destroy: UserInterface.destroy,
-            extend: UserInterface.extend,
+            extend: UserInterface.extend
         };
 
     })(jQuery, window);
