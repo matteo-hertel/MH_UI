@@ -134,7 +134,7 @@
             self.config.container.append($("<h2/>", {text: "Progressbar", style: "cursor: pointer;"}).on("click", function() {
                 UI.modal({title: "<h4>Source Code</h4>", body: '<pre>var div = $("#target_div");<br />var progressbar = UI.progressbar({level:"success",<br /> striped: true,<br /> active:true,<br /> percentage:0<br />});<br /><br />div.append(progressbar.object);<br /><br />div.append(<br />$("&lt;div/&gt;",{id:"progress_bar_slider"}));<br /><br />$("#progress_bar_slider").slider({range:"max",<br />min:0,<br />max:100,<br />value:0,<br />slide:function(event,ui){<br />progressbar.animate({time:5,percentage:ui.value})<br />}});</pre>'})
             }));
-            self.config.container.append($("<p/>", {text: "An empty progressbar is created, you can adjust the widht with the slider"}));
+            self.config.container.append($("<p/>", {text: "An empty progressbar is created, you can adjust the width with the slider"}));
             var progressbar = UI.progressbar({striped: true, active: true, percentage: 0});
             self.config.container.append(progressbar);
             self.config.container.append($("<div/>", {id: "progress_bar_slider"}));
