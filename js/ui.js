@@ -845,7 +845,7 @@
 //}
 var UserInterface = UserInterface || new Function();
 
-Object.defineProperties(UserInterface, {
+Object.defineProperties(UserInterface.prototype, {
     version: {
         value: 0.2
     },
@@ -853,6 +853,71 @@ Object.defineProperties(UserInterface, {
         value: "Matteo Hertel"
     },
     components: {
-        value: {}
+        value: {}, 
+        enumerable: true
     },
-})
+    defaultValues: {
+        value: {}, 
+        enumerable: true
+    },
+    nodes: {
+        value: {},
+    },
+    generateID : {
+        value: function(){
+               var genereate = function(){
+                   var text = "";
+                   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+                   for (var i = 0; i < 18; i++)
+                       text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                   return text;
+               }
+               var id = genereate();
+               var unique = this.nodes[id] === undefined ? true : false;
+               while (unique === false){
+                    id = genereate(); 
+                    unique = this.nodes[id] === undefined ? true : false;
+                }
+            return id;
+        }
+    },
+    partial: {
+        value: function(func /*, 0..n args */) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return function() {
+            var allArguments = args.concat(Array.prototype.slice.call(arguments));
+            return func.apply(this, allArguments);
+        };
+    }
+                        },
+    register: {
+        value: function(name, component, defaultValue, editable){
+            
+            if(!name || !component){
+                throw new Error("Name and component function are mandatory");
+                return;    
+            }
+            
+            if(this.components[name]){
+                throw new Error("component already loaded");
+                return;
+            };
+            var node = this.nodes[this.generateID()] = {test: "lol"}
+
+            Object.defineProperty(this.components, name, {
+                value: this.partial(component, node),
+                writable: editable || false,
+                configurable: editable || false
+            });
+
+            if(defaultValue){
+                this.defaultValues[name] = defaultValue;
+            }
+ 
+        }
+    }
+});
+
+var UI = Object.create(UserInterface.prototype.components);
