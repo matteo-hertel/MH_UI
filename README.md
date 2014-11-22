@@ -1,4 +1,5 @@
 <h3>MH_UI</h3>
+<h2>22/11/2014: Add module compatible with require.js</h2>
 <p>The purpose of this library is to provide a way to create interactive UI component such modal and toast in JavaScript
 without bother the developer to create the DOM element and insert HTML and CSS inside the JavaScript code, to make
 the code more readable, clean and have a HTML/CSS separate from the JS file or script.
