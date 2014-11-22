@@ -5,8 +5,8 @@
  *
  */
 
-if (typeof jQuery === "function") {
-    var UI = UI || (function ($, window, undefined) {
+define(["jquery"], function ($) {
+    var UI = UI || (function($, window, undefined) {
         var UserInterface = {
             // set the components to an empty object than we can store
             // here our components the first components is actually an array where the ids are stored
@@ -31,7 +31,7 @@ if (typeof jQuery === "function") {
              *
              *
              */
-            modal: function (data) {
+            modal: function(data) {
                 var self = UserInterface, out;
                 // if an object is passed to the modal let's create the modal
                 if (typeof data === "object") {
@@ -54,7 +54,7 @@ if (typeof jQuery === "function") {
                 out.hide = self.partial(self.components.modal.skeleton.hide, self.components.skeletons[id]);
                 return out;
             },
-            modalCreate: function () {
+            modalCreate: function() {
                 var self = UserInterface;
                 // name the component for two reason:
                 // using n the name is shortened and all the code is more abstract
@@ -104,40 +104,40 @@ if (typeof jQuery === "function") {
 
                 // title method
                 // this method will add a title at our modal
-                self.components[n].skeleton.title = function (object, html) {
+                self.components[n].skeleton.title = function(object, html) {
                     object.find(".modal-header").html(html);
                 };
                 // titleAppend method
                 // do you want to append something at the modal's title? No probem, use this method!
-                self.components[n].skeleton.titleAppend = function (object, html) {
+                self.components[n].skeleton.titleAppend = function(object, html) {
                     object.find(".modal-header").append(html);
                 };
                 // body method
                 // this method will add the body at our modal
-                self.components[n].skeleton.body = function (object, html) {
+                self.components[n].skeleton.body = function(object, html) {
                     object.find(".modal-body").html(html);
                 };
                 // bodyAppend method
                 // do you want to append something at the modal's body? No probem, use this method!
-                self.components[n].skeleton.bodyAppend = function (object, html) {
+                self.components[n].skeleton.bodyAppend = function(object, html) {
                     object.find(".modal-body").append(html);
                 };
                 // footer method
                 // this method will append the content rather that insert the HTML, is better for the footer
                 // and only if a object is passed will be appended
-                self.components[n].skeleton.footer = function (object, html) {
+                self.components[n].skeleton.footer = function(object, html) {
                     object.find(".modal-footer").append(html);
                 };
 
                 // show method
                 // if you set false the show propety, with this method you can display the modal
-                self.components[n].skeleton.show = function (object) {
+                self.components[n].skeleton.show = function(object) {
                     // to keep the body clean when the modal is closed it will be removed from the DOM
                     object.modal().on("hide.bs.modal", self.partial(self.modalRemove, object));
                 };
                 // hide method
                 // nice to have method, it can be useful
-                self.components[n].skeleton.hide = function (object) {
+                self.components[n].skeleton.hide = function(object) {
                     object.modal("hide");
                 };
 
@@ -171,7 +171,7 @@ if (typeof jQuery === "function") {
                 return id;
             },
             // method to remove the modal from the DOM
-            modalRemove: function (object) {
+            modalRemove: function(object) {
                 object.remove();
             },
             /*
@@ -198,7 +198,7 @@ if (typeof jQuery === "function") {
              *     active:  {optional} boolean to make the progressbar active
              *     callback: {optional} a callback function that will be executed once the bar is created, to this function will be passed an object with a reference to the bar and the aniamte function
              */
-            progressbar: function (data) {
+            progressbar: function(data) {
 
                 var self = UserInterface;
                 // if an object is passed to the progressbar let's create it
@@ -217,7 +217,7 @@ if (typeof jQuery === "function") {
                 }
             },
             // a function to build the class string that will be used in the progressbar
-            progressbarBuildComponent: function () {
+            progressbarBuildComponent: function() {
                 var self = UserInterface;
 
                 // name the component for two reason:
@@ -245,7 +245,7 @@ if (typeof jQuery === "function") {
              *   a valid function is passed the callback will be executed
              *
              */
-            progressbarAnimate: function (object, data) {
+            progressbarAnimate: function(object, data) {
 
                 if (typeof data === "number") {
                     var temp_object = {
@@ -263,7 +263,7 @@ if (typeof jQuery === "function") {
                 var width = object.width();
                 $(object.children()[0]).animate({
                     width: (width * data.percentage) / 100 + "px"
-                }, data.time, function () {
+                }, data.time, function() {
                     // if a callback is provided fire it
                     if (typeof data.callback === "function") {
                         data.callback();
@@ -272,7 +272,7 @@ if (typeof jQuery === "function") {
                 return object;
             },
             // the core function that will create the progressbar
-            progressbarCreate: function () {
+            progressbarCreate: function() {
                 var self = UserInterface, out;
 
                 // name the component for two reason:
@@ -342,7 +342,7 @@ if (typeof jQuery === "function") {
              *     actions: {optional} an object with key the event you want to bind (click, mouseenter, customEvent, NOTE: do not quote the event), and the relative function 
              *     callback: {optional} a callback function that will be executed once the button is created, to this function will be passed the HTML object for the button
              */
-            button: function (data) {
+            button: function(data) {
 
                 var self = UserInterface;
                 // if an object is passed the user want a custom button
@@ -360,7 +360,7 @@ if (typeof jQuery === "function") {
                 }
             },
             //this function will take care of all the borgin stuff like create the right class and so on
-            buttonBuildComponent: function () {
+            buttonBuildComponent: function() {
                 var self = UserInterface;
                 // name the component for two reason:
                 // using n the name is shortened and all the code is more abstract
@@ -381,7 +381,7 @@ if (typeof jQuery === "function") {
 
             },
             // want to chage the text after the button is created, no problem!
-            buttonChangeText: function (object, data) {
+            buttonChangeText: function(object, data) {
                 if (typeof data === "string") {
                     var temp_object = {text: data};
                     data = temp_object;
@@ -397,7 +397,7 @@ if (typeof jQuery === "function") {
 
             },
             // you forgot to bind some event to the button didn't you, this function will help you
-            buttonAddActions: function (object, htmlObj) {
+            buttonAddActions: function(object, htmlObj) {
                 // if no object return false
                 if (typeof htmlObj !== "object") {
                     return false;
@@ -409,7 +409,7 @@ if (typeof jQuery === "function") {
 
             },
             // let's create the button
-            buttonCreate: function () {
+            buttonCreate: function() {
                 var self = UserInterface, out;
 
                 var n = "button";
@@ -474,7 +474,7 @@ if (typeof jQuery === "function") {
              *
              *
              */
-            alert: function (data) {
+            alert: function(data) {
 
                 var self = UserInterface;
                 // if an object is passed add the data to the right component
@@ -491,7 +491,7 @@ if (typeof jQuery === "function") {
                     return self.alertCreate();
                 }
             },
-            alertBuildComponent: function () {
+            alertBuildComponent: function() {
                 var self = UserInterface;
 
                 // name the component for two reason:
@@ -512,7 +512,7 @@ if (typeof jQuery === "function") {
                 self.components[n].id = self.components[n].id || self.components[n].alertID;
 
             },
-            alertTimeOut: function (object, data) {
+            alertTimeOut: function(object, data) {
                 // if a number is passed let's use it as time
                 if (typeof data === "number") {
                     var temp_object = {time: data};
@@ -523,11 +523,11 @@ if (typeof jQuery === "function") {
                     return false;
                 }
                 // a simple timeout to destroy the alert
-                setTimeout(function () {
+                setTimeout(function() {
                     // if an effect is passed than use it
                     if (data.effect) {
                         // if no effect time passed than use 400 ms
-                        object[data.effect](data.effectTime || 400, function () {
+                        object[data.effect](data.effectTime || 400, function() {
                             // alert("close") will remove the alert from the DOM
                             object.alert("close");
 
@@ -541,12 +541,12 @@ if (typeof jQuery === "function") {
                 return object;
 
             },
-            alertAppend: function (object, html) {
+            alertAppend: function(object, html) {
                 object.append(html);
                 return object;
             },
             // let's create the alert
-            alertCreate: function () {
+            alertCreate: function() {
                 var self = UserInterface;
 
                 // name the component for two reason:
@@ -647,7 +647,7 @@ if (typeof jQuery === "function") {
              *
              *
              */
-            toast: function (data) {
+            toast: function(data) {
 
                 var self = UserInterface;
                 // if an object is passed add the data to the right component
@@ -666,7 +666,7 @@ if (typeof jQuery === "function") {
                 }
 
             },
-            toastCreate: function () {
+            toastCreate: function() {
                 var self = UserInterface, out;
                 // name the component for two reason:
                 // using n the name is shortened and all the code is more abstract
@@ -767,7 +767,7 @@ if (typeof jQuery === "function") {
                 out.timeOut = self.partial(self.alertTimeOut, self.components.skeletons[id]);
                 return out;
             },
-            randomId: function () {
+            randomId: function() {
                 var text = "";
                 var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -776,14 +776,14 @@ if (typeof jQuery === "function") {
 
                 return text;
             },
-            partial: function (func /*, 0..n args */) {
+            partial: function(func /*, 0..n args */) {
                 var args = Array.prototype.slice.call(arguments, 1);
-                return function () {
+                return function() {
                     var allArguments = args.concat(Array.prototype.slice.call(arguments));
                     return func.apply(this, allArguments);
                 };
             },
-            addData: function (object, data) {
+            addData: function(object, data) {
                 for (var item in data) {
                     // a simple check to be sure the key exist
                     if (data.hasOwnProperty(item)) {
@@ -791,10 +791,10 @@ if (typeof jQuery === "function") {
                     }
                 }
             },
-            log: function () {
+            log: function() {
                 return UserInterface.components;
             },
-            destroy: function () {
+            destroy: function() {
                 var self = UserInterface;
 
                 for (var id in self.components.skeletons) {
@@ -804,7 +804,7 @@ if (typeof jQuery === "function") {
                     skeletons: {}
                 };
             },
-            extend: function (name, object) {
+            extend: function(name, object) {
                 UserInterface.default[name] = $.extend({}, UserInterface.default[name], object);
             },
             // set the default object, it can be extended by the function extend
@@ -841,5 +841,5 @@ if (typeof jQuery === "function") {
         };
 
     })(jQuery, window);
-
-}
+return UI;
+});
